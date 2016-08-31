@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Hexo</title>
-  
+  <title>shaop的博客</title>
+  <subtitle>better</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
@@ -9,8 +9,8 @@
   <id>http://yoursite.com/</id>
   
   <author>
-    <name>John Doe</name>
-    
+    <name>shaop</name>
+    <email>sxp644645107@gamil.com</email>
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
