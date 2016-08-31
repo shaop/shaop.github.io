@@ -3,26 +3,46 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | shaop的博客 | better</title>
+  <title>AutoLayout的使用 | shaop的博客 | better</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="theme-color" content="#3F51B5">
   
   
   <meta name="keywords" content="">
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+  <meta name="description" content="相信很多同学在刚接触ios开发的时候，非常熟悉这句代码
+initWithFrame:CGRectMake(0, 0, 20, 20)
+这是很多人刚刚开始学会布局的时候使用的一种布局方式，没错，我也是。这种布局方式很适合刚入门的开发者，frame将控件的位置用一种绝对位置的方式固定在屏幕中。如下图。
+ 
+如图的例子就是将一个60x60的控件放置在 x轴座标为20，y轴座标为20的区域中。
+
+这种方式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2016/08/31/hello-world/index.html">
+<meta property="og:title" content="AutoLayout的使用">
+<meta property="og:url" content="shaop.github.io/2016/08/31/autolayout的使用/index.html">
 <meta property="og:site_name" content="shaop的博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:updated_time" content="2016-08-31T10:37:59.000Z">
+<meta property="og:description" content="相信很多同学在刚接触ios开发的时候，非常熟悉这句代码
+initWithFrame:CGRectMake(0, 0, 20, 20)
+这是很多人刚刚开始学会布局的时候使用的一种布局方式，没错，我也是。这种布局方式很适合刚入门的开发者，frame将控件的位置用一种绝对位置的方式固定在屏幕中。如下图。
+ 
+如图的例子就是将一个60x60的控件放置在 x轴座标为20，y轴座标为20的区域中。
+
+这种方式">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/frame.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/autolayout.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/Constraint.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/leding%E5%92%8Ctrailing.png">
+<meta property="og:updated_time" content="2016-08-31T12:37:01.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="twitter:title" content="AutoLayout的使用">
+<meta name="twitter:description" content="相信很多同学在刚接触ios开发的时候，非常熟悉这句代码
+initWithFrame:CGRectMake(0, 0, 20, 20)
+这是很多人刚刚开始学会布局的时候使用的一种布局方式，没错，我也是。这种布局方式很适合刚入门的开发者，frame将控件的位置用一种绝对位置的方式固定在屏幕中。如下图。
+ 
+如图的例子就是将一个60x60的控件放置在 x轴座标为20，y轴座标为20的区域中。
+
+这种方式">
+<meta name="twitter:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/frame.png">
   
     <link rel="alternative" href="/atom.xml" title="shaop的博客" type="application/atom+xml">
   
@@ -97,7 +117,7 @@ Quick">
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">Hello World</div>
+        <div class="flex-col header-title ellipsis">AutoLayout的使用</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -118,10 +138,10 @@ Quick">
 </header>
 <header class="content-header">
   <div class="container">
-    <h1 class="author">Hello World</h1>
+    <h1 class="author">AutoLayout的使用</h1>
     <h5 class="subtitle">
         
-            <time datetime="2016-08-31T10:37:59.000Z" itemprop="datePublished" class="page-time">
+            <time datetime="2016-08-31T12:14:19.000Z" itemprop="datePublished" class="page-time">
   2016-08-31
 </time>
 
@@ -132,7 +152,7 @@ Quick">
 </header>
 
     <div class="container body-wrap">
-      <article id="post-hello-world" 
+      <article id="post-autolayout的使用" 
   class="article article-type-post" itemprop="blogPost">
     <div class="post-meta flex-row">
         
@@ -181,7 +201,7 @@ Quick">
 
             
             <nav class="post-toc-wrap" id="post-toc">
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Quick-Start"><span class="post-toc-text">Quick Start</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Create-a-new-post"><span class="post-toc-text">Create a new post</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Run-server"><span class="post-toc-text">Run server</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Generate-static-files"><span class="post-toc-text">Generate static files</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Deploy-to-remote-sites"><span class="post-toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#为什么使用AutoLayout"><span class="post-toc-text">为什么使用AutoLayout</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#什么是AutoLayout"><span class="post-toc-text">什么是AutoLayout</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#相关约束属性"><span class="post-toc-text">相关约束属性</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#最后"><span class="post-toc-text">最后</span></a></li></ol>
             </nav>
             
         </aside>
@@ -189,35 +209,71 @@ Quick">
         <div class="post-main">
 
             <div class="post-content" id="post-content" itemprop="postContent">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+            <p>相信很多同学在刚接触ios开发的时候，非常熟悉这句代码</p>
+<p><code>initWithFrame:CGRectMake(0, 0, 20, 20)</code></p>
+<p>这是很多人刚刚开始学会布局的时候使用的一种布局方式，没错，我也是。这种布局方式很适合刚入门的开发者，<code>frame</code>将控件的位置用一种绝对位置的方式固定在屏幕中。如下图。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/frame.png" alt="frame图解"> </p>
+<p>如图的例子就是将一个60x60的控件放置在 <strong>x轴座标为20，y轴座标为20</strong>的区域中。</p>
+<blockquote>
+<p>这种方式在iPhone 4之前的年代十分合适，因为屏幕大小确定，开发者只需要确定绝对位置，就能很方便的布局了。在屏幕多样化的现在，依旧很多人使用这种方式，但是需要加入一定的计算。获取屏幕宽度，用比例去计算大小。</p>
+</blockquote>
+<h2 id="为什么使用AutoLayout"><a href="#为什么使用AutoLayout" class="headerlink" title="为什么使用AutoLayout"></a>为什么使用AutoLayout</h2><p>之前也说过，使用<code>frame</code>的方式，难以做出很好的屏幕适配，甚至需要一定的计算量。那在现在屏幕分辨率碎片化越来越严重的时代，我们应该找到一种能一套方案，解决所有屏幕布局的方法。</p>
+<p>没错，那就是<code>AutoLayout</code>。</p>
+<h2 id="什么是AutoLayout"><a href="#什么是AutoLayout" class="headerlink" title="什么是AutoLayout"></a>什么是AutoLayout</h2><p><code>AutoLayout</code>，让开发者能用一个设计来适配所有屏幕，从理论上来说，可以做到iPhone 4到iPad pro的所有屏幕适配。<strong><em>当然，我这里说的是理论上，也有可能会出现意外</em></strong> </p>
+<p><code>AutoLayout</code>意图让开发者忘记屏幕本身的尺寸，使用任意一个画布，利用约束（constraint）来进行对各个控件之间的距离，长宽进行控制。利用上面同样一张图控件的位置，我们可以来进行对比。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/autolayout.png" alt="autolayout图解"></p>
+<p>如图所示，我们可以根据我们所需要的实际情况，利用不同的方式来进行对控件的约束。</p>
+<h2 id="相关约束属性"><a href="#相关约束属性" class="headerlink" title="相关约束属性"></a>相关约束属性</h2><ul>
+<li>left</li>
+<li>right</li>
+<li>width</li>
+<li>height</li>
+<li>bottom</li>
+<li>top</li>
+<li>leading</li>
+<li>trailing</li>
+<li>centerX</li>
+<li>centerY</li>
+<li>baseLine</li>
+</ul>
+<p>这里我用一张图来更加直观得反应这些约束的实际意义</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/Constraint.png" alt="constraint图解"></p>
+<p>有了这些属性，我们就能轻松定义控件与控件之间的关系啦！</p>
+<p>这里有一点值得注意，<code>leading</code>和<code>trailing</code>  这两个属性似乎与<code>left</code>和<code>right</code>很相似。确实，在大部分情况下，这两个属性的意义确实是相同的，他们存在的意义在于不同语言环境下。有些国家，或者说中国古代的书写顺序是和现在相反的，<strong>即从右往左的写法</strong>(正常情况是从左往右)。具体情况如下图。<br><img src="http://7xkl1p.com1.z0.glb.clouddn.com/leding%E5%92%8Ctrailing.png" alt="leading and trailing 图解"></p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>简单得介绍了autolayout，图都是我自己一点点画的，希望能对autolayout的一无所知同学有一定帮助，后面我会再更新两篇文章，来结合实际开发来具体讲述下实战中的运用。</p>
 
             <blockquote>
                 <p>
                 本文地址：
-                <a href="http://yoursite.com/2016/08/31/hello-world/" target="_blank" rel="external">http://yoursite.com/2016/08/31/hello-world/</a>
+                <a href="shaop.github.io/2016/08/31/autolayout的使用/" target="_blank" rel="external">shaop.github.io/2016/08/31/autolayout的使用/</a>
                 </p>
-                <footer><cite><a href="http://yoursite.com">@shaop的博客</a></cite></footer>
+                <footer><cite><a href="shaop.github.io">@shaop的博客</a></cite></footer>
             </blockquote>
             </div>
             
+<nav class="post-nav">
+  
+
+  
+    <div class="waves-block waves-effect next fr">
+      <a href="/2016/08/31/我的移动开发学习/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">我的移动开发学习</h4>
+      </a>
+    </div>
+  
+</nav>
+
 
             
             
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="hello-world" data-title="Hello World" data-url="http://yoursite.com/2016/08/31/hello-world/index.html"></div>
+	<div class="ds-thread" data-thread-key="autolayout的使用" data-title="AutoLayout的使用" data-url="shaop.github.io/2016/08/31/autolayout的使用/index.html"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"ysblog"};
+	var duoshuoQuery = {short_name:"shaop"};
 	(function() {
 		var ds = document.createElement('script');
 		ds.type = 'text/javascript';ds.async = true;
@@ -244,10 +300,10 @@ Quick">
 
 <script>
 var BLOG_SHARE = {
-    title: "Hello World",
+    title: "AutoLayout的使用",
     pic: "/img/header.JPG",
     summary: document.getElementsByName('summary')[0].content,
-    url: "http://yoursite.com/2016/08/31/hello-world/index.html"
+    url: "shaop.github.io/2016/08/31/autolayout的使用/index.html"
 };
 </script>
 <div class="global-share" id="global-share">
