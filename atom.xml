@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="shaop.github.io/"/>
-  <updated>2016-08-31T12:37:01.000Z</updated>
+  <updated>2016-09-01T09:52:46.000Z</updated>
   <id>shaop.github.io/</id>
   
   <author>
@@ -14,6 +14,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AutoLayout使用（实战一）</title>
+    <link href="shaop.github.io/2016/09/01/%E5%AE%9E%E6%88%98(%E4%B8%80)/"/>
+    <id>shaop.github.io/2016/09/01/实战(一)/</id>
+    <published>2016-09-01T01:44:09.000Z</published>
+    <updated>2016-09-01T09:52:46.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h2><p>在开始之前，先看下我们要完成的效果图的样子。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/main.png" alt="main"></p>
+<p>我们的目标是打算做成这个样子的一个页面。当然，这样简单的一个页面，使用<code>frame</code>,我相信很多同学也很快能够完成，但是，现在，让我们用<code>AutoLayout</code>来看下搭建这样一个页面，到底有简单呢？</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p><code>AutoLayout</code>使用的是一种相对布局，和android的<code>RelativeLayout</code>有着很相似的地方。<br>接来下，先理一下思路。    这里，我用一张图来表达一下。<br><img src="http://7xkl1p.com1.z0.glb.clouddn.com/demo.png" alt="demo"></p>
+<p>简单解释一下这张图：</p>
+<ul>
+<li>头像部分，左边和顶部距离屏幕20个单位，头像大小固定为40x40</li>
+<li>姓名与时间，分别与头像的顶部与底部对齐，左边距离头像15个单位</li>
+<li>大图，距离头像20个单位，左边与右边距离屏幕20个单位（这样就固定了图片的长），之后再让其长宽相等，这样就是一个正方形的图片了</li>
+<li>底部正文文字，左边距离屏幕20个单位，顶部距离图片20个单位。</li>
+</ul>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>知道了如何布局，那现在就开始实践吧～<br>打开XCode,新建一个工程。打开<code>storyboard</code>。为了美观，可以为原有的<code>ViewController</code>加入一个<code>NavigationController</code>。接下来，将我们需要的控件拖入进来。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step1.gif" alt="9.1step1"></p>
+<h3 id="头部试图"><a href="#头部试图" class="headerlink" title="头部试图"></a>头部试图</h3><p>选中图片，点击右下角的pin按钮，对其进行约束的添加。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step2.gif" alt="9.1.1step2"></p>
+<p>继续对两边的文字进行约束的添加。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step3.gif" alt="9.1.2step3"></p>
+<h3 id="主要部分"><a href="#主要部分" class="headerlink" title="主要部分"></a>主要部分</h3><p>选中中间的图片。对其进行约束的添加。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step4.gif" alt="9.1.3step4"></p>
+<p>选中最后的文字，对其进行约束的添加。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step5.gif" alt="9.1.4step5"></p>
+<h2 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h2><p>现在，我们就对这样一个布局添加好约束了！给图片们添加一些属性，打开模拟器看一下，在各个屏幕中都有良好的现实效果。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step6.gif" alt="9.1.5step6"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;预览&quot;&gt;&lt;a href=&quot;#预览&quot; class=&quot;headerlink&quot; title=&quot;预览&quot;&gt;&lt;/a&gt;预览&lt;/h2&gt;&lt;p&gt;在开始之前，先看下我们要完成的效果图的样子。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xkl1p.com1.z0.glb.clou
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>AutoLayout的使用</title>

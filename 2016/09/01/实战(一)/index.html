@@ -3,46 +3,41 @@
 <head>
   <meta charset="utf-8">
   
-  <title>AutoLayout的使用 | shaop的博客 | better</title>
+  <title>AutoLayout使用（实战一） | shaop的博客 | better</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="theme-color" content="#3F51B5">
   
   
   <meta name="keywords" content="">
-  <meta name="description" content="相信很多同学在刚接触ios开发的时候，非常熟悉这句代码
-initWithFrame:CGRectMake(0, 0, 20, 20)
-这是很多人刚刚开始学会布局的时候使用的一种布局方式，没错，我也是。这种布局方式很适合刚入门的开发者，frame将控件的位置用一种绝对位置的方式固定在屏幕中。如下图。
- 
-如图的例子就是将一个60x60的控件放置在 x轴座标为20，y轴座标为20的区域中。
+  <meta name="description" content="预览在开始之前，先看下我们要完成的效果图的样子。
 
-这种方式">
+我们的目标是打算做成这个样子的一个页面。当然，这样简单的一个页面，使用frame,我相信很多同学也很快能够完成，但是，现在，让我们用AutoLayout来看下搭建这样一个页面，到底有简单呢？
+准备AutoLayout使用的是一种相对布局，和android的RelativeLayout有着很相似的地方。接来下，先理一下思路。    这里，我用一张图">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AutoLayout的使用">
-<meta property="og:url" content="shaop.github.io/2016/08/31/autolayout的使用/index.html">
+<meta property="og:title" content="AutoLayout使用（实战一）">
+<meta property="og:url" content="shaop.github.io/2016/09/01/实战(一)/index.html">
 <meta property="og:site_name" content="shaop的博客">
-<meta property="og:description" content="相信很多同学在刚接触ios开发的时候，非常熟悉这句代码
-initWithFrame:CGRectMake(0, 0, 20, 20)
-这是很多人刚刚开始学会布局的时候使用的一种布局方式，没错，我也是。这种布局方式很适合刚入门的开发者，frame将控件的位置用一种绝对位置的方式固定在屏幕中。如下图。
- 
-如图的例子就是将一个60x60的控件放置在 x轴座标为20，y轴座标为20的区域中。
+<meta property="og:description" content="预览在开始之前，先看下我们要完成的效果图的样子。
 
-这种方式">
-<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/frame.png">
-<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/autolayout.png">
-<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/Constraint.png">
-<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/leding%E5%92%8Ctrailing.png">
-<meta property="og:updated_time" content="2016-08-31T12:37:01.000Z">
+我们的目标是打算做成这个样子的一个页面。当然，这样简单的一个页面，使用frame,我相信很多同学也很快能够完成，但是，现在，让我们用AutoLayout来看下搭建这样一个页面，到底有简单呢？
+准备AutoLayout使用的是一种相对布局，和android的RelativeLayout有着很相似的地方。接来下，先理一下思路。    这里，我用一张图">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/main.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/demo.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step1.gif">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step2.gif">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step3.gif">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step4.gif">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step5.gif">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step6.gif">
+<meta property="og:updated_time" content="2016-09-01T09:52:46.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AutoLayout的使用">
-<meta name="twitter:description" content="相信很多同学在刚接触ios开发的时候，非常熟悉这句代码
-initWithFrame:CGRectMake(0, 0, 20, 20)
-这是很多人刚刚开始学会布局的时候使用的一种布局方式，没错，我也是。这种布局方式很适合刚入门的开发者，frame将控件的位置用一种绝对位置的方式固定在屏幕中。如下图。
- 
-如图的例子就是将一个60x60的控件放置在 x轴座标为20，y轴座标为20的区域中。
+<meta name="twitter:title" content="AutoLayout使用（实战一）">
+<meta name="twitter:description" content="预览在开始之前，先看下我们要完成的效果图的样子。
 
-这种方式">
-<meta name="twitter:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/frame.png">
+我们的目标是打算做成这个样子的一个页面。当然，这样简单的一个页面，使用frame,我相信很多同学也很快能够完成，但是，现在，让我们用AutoLayout来看下搭建这样一个页面，到底有简单呢？
+准备AutoLayout使用的是一种相对布局，和android的RelativeLayout有着很相似的地方。接来下，先理一下思路。    这里，我用一张图">
+<meta name="twitter:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/main.png">
   
     <link rel="alternative" href="/atom.xml" title="shaop的博客" type="application/atom+xml">
   
@@ -117,7 +112,7 @@ initWithFrame:CGRectMake(0, 0, 20, 20)
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">AutoLayout的使用</div>
+        <div class="flex-col header-title ellipsis">AutoLayout使用（实战一）</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -138,11 +133,11 @@ initWithFrame:CGRectMake(0, 0, 20, 20)
 </header>
 <header class="content-header">
   <div class="container">
-    <h1 class="author">AutoLayout的使用</h1>
+    <h1 class="author">AutoLayout使用（实战一）</h1>
     <h5 class="subtitle">
         
-            <time datetime="2016-08-31T12:14:19.000Z" itemprop="datePublished" class="page-time">
-  2016-08-31
+            <time datetime="2016-09-01T01:44:09.000Z" itemprop="datePublished" class="page-time">
+  2016-09-01
 </time>
 
 
@@ -152,7 +147,7 @@ initWithFrame:CGRectMake(0, 0, 20, 20)
 </header>
 
     <div class="container body-wrap">
-      <article id="post-autolayout的使用" 
+      <article id="post-实战(一)" 
   class="article article-type-post" itemprop="blogPost">
     <div class="post-meta flex-row">
         
@@ -201,7 +196,7 @@ initWithFrame:CGRectMake(0, 0, 20, 20)
 
             
             <nav class="post-toc-wrap" id="post-toc">
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#为什么使用AutoLayout"><span class="post-toc-text">为什么使用AutoLayout</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#什么是AutoLayout"><span class="post-toc-text">什么是AutoLayout</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#相关约束属性"><span class="post-toc-text">相关约束属性</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#最后"><span class="post-toc-text">最后</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#预览"><span class="post-toc-text">预览</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#准备"><span class="post-toc-text">准备</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#开始"><span class="post-toc-text">开始</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#头部试图"><span class="post-toc-text">头部试图</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#主要部分"><span class="post-toc-text">主要部分</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#完成"><span class="post-toc-text">完成</span></a></li></ol>
             </nav>
             
         </aside>
@@ -209,43 +204,34 @@ initWithFrame:CGRectMake(0, 0, 20, 20)
         <div class="post-main">
 
             <div class="post-content" id="post-content" itemprop="postContent">
-            <p>相信很多同学在刚接触ios开发的时候，非常熟悉这句代码</p>
-<p><code>initWithFrame:CGRectMake(0, 0, 20, 20)</code></p>
-<p>这是很多人刚刚开始学会布局的时候使用的一种布局方式，没错，我也是。这种布局方式很适合刚入门的开发者，<code>frame</code>将控件的位置用一种绝对位置的方式固定在屏幕中。如下图。</p>
-<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/frame.png" alt="frame图解"> </p>
-<p>如图的例子就是将一个60x60的控件放置在 <strong>x轴座标为20，y轴座标为20</strong>的区域中。</p>
-<blockquote>
-<p>这种方式在iPhone 4之前的年代十分合适，因为屏幕大小确定，开发者只需要确定绝对位置，就能很方便的布局了。在屏幕多样化的现在，依旧很多人使用这种方式，但是需要加入一定的计算。获取屏幕宽度，用比例去计算大小。</p>
-</blockquote>
-<h2 id="为什么使用AutoLayout"><a href="#为什么使用AutoLayout" class="headerlink" title="为什么使用AutoLayout"></a>为什么使用AutoLayout</h2><p>之前也说过，使用<code>frame</code>的方式，难以做出很好的屏幕适配，甚至需要一定的计算量。那在现在屏幕分辨率碎片化越来越严重的时代，我们应该找到一种能一套方案，解决所有屏幕布局的方法。</p>
-<p>没错，那就是<code>AutoLayout</code>。</p>
-<h2 id="什么是AutoLayout"><a href="#什么是AutoLayout" class="headerlink" title="什么是AutoLayout"></a>什么是AutoLayout</h2><p><code>AutoLayout</code>，让开发者能用一个设计来适配所有屏幕，从理论上来说，可以做到iPhone 4到iPad pro的所有屏幕适配。<strong><em>当然，我这里说的是理论上，也有可能会出现意外</em></strong> </p>
-<p><code>AutoLayout</code>意图让开发者忘记屏幕本身的尺寸，使用任意一个画布，利用约束（constraint）来进行对各个控件之间的距离，长宽进行控制。利用上面同样一张图控件的位置，我们可以来进行对比。</p>
-<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/autolayout.png" alt="autolayout图解"></p>
-<p>如图所示，我们可以根据我们所需要的实际情况，利用不同的方式来进行对控件的约束。</p>
-<h2 id="相关约束属性"><a href="#相关约束属性" class="headerlink" title="相关约束属性"></a>相关约束属性</h2><ul>
-<li>left</li>
-<li>right</li>
-<li>width</li>
-<li>height</li>
-<li>bottom</li>
-<li>top</li>
-<li>leading</li>
-<li>trailing</li>
-<li>centerX</li>
-<li>centerY</li>
-<li>baseLine</li>
+            <h2 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h2><p>在开始之前，先看下我们要完成的效果图的样子。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/main.png" alt="main"></p>
+<p>我们的目标是打算做成这个样子的一个页面。当然，这样简单的一个页面，使用<code>frame</code>,我相信很多同学也很快能够完成，但是，现在，让我们用<code>AutoLayout</code>来看下搭建这样一个页面，到底有简单呢？</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p><code>AutoLayout</code>使用的是一种相对布局，和android的<code>RelativeLayout</code>有着很相似的地方。<br>接来下，先理一下思路。    这里，我用一张图来表达一下。<br><img src="http://7xkl1p.com1.z0.glb.clouddn.com/demo.png" alt="demo"></p>
+<p>简单解释一下这张图：</p>
+<ul>
+<li>头像部分，左边和顶部距离屏幕20个单位，头像大小固定为40x40</li>
+<li>姓名与时间，分别与头像的顶部与底部对齐，左边距离头像15个单位</li>
+<li>大图，距离头像20个单位，左边与右边距离屏幕20个单位（这样就固定了图片的长），之后再让其长宽相等，这样就是一个正方形的图片了</li>
+<li>底部正文文字，左边距离屏幕20个单位，顶部距离图片20个单位。</li>
 </ul>
-<p>这里我用一张图来更加直观得反应这些约束的实际意义</p>
-<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/Constraint.png" alt="constraint图解"></p>
-<p>有了这些属性，我们就能轻松定义控件与控件之间的关系啦！</p>
-<p>这里有一点值得注意，<code>leading</code>和<code>trailing</code>  这两个属性似乎与<code>left</code>和<code>right</code>很相似。确实，在大部分情况下，这两个属性的意义确实是相同的，他们存在的意义在于不同语言环境下。有些国家，或者说中国古代的书写顺序是和现在相反的，<strong>即从右往左的写法</strong>(正常情况是从左往右)。具体情况如下图。<br><img src="http://7xkl1p.com1.z0.glb.clouddn.com/leding%E5%92%8Ctrailing.png" alt="leading and trailing 图解"></p>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>简单得介绍了autolayout，图都是我自己一点点画的，希望能对autolayout的一无所知同学有一定帮助，后面我会再更新两篇文章，来结合实际开发来具体讲述下实战中的运用。</p>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>知道了如何布局，那现在就开始实践吧～<br>打开XCode,新建一个工程。打开<code>storyboard</code>。为了美观，可以为原有的<code>ViewController</code>加入一个<code>NavigationController</code>。接下来，将我们需要的控件拖入进来。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step1.gif" alt="9.1step1"></p>
+<h3 id="头部试图"><a href="#头部试图" class="headerlink" title="头部试图"></a>头部试图</h3><p>选中图片，点击右下角的pin按钮，对其进行约束的添加。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step2.gif" alt="9.1.1step2"></p>
+<p>继续对两边的文字进行约束的添加。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step3.gif" alt="9.1.2step3"></p>
+<h3 id="主要部分"><a href="#主要部分" class="headerlink" title="主要部分"></a>主要部分</h3><p>选中中间的图片。对其进行约束的添加。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step4.gif" alt="9.1.3step4"></p>
+<p>选中最后的文字，对其进行约束的添加。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step5.gif" alt="9.1.4step5"></p>
+<h2 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h2><p>现在，我们就对这样一个布局添加好约束了！给图片们添加一些属性，打开模拟器看一下，在各个屏幕中都有良好的现实效果。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/9.1step6.gif" alt="9.1.5step6"></p>
 
             <blockquote>
                 <p>
                 本文地址：
-                <a href="shaop.github.io/2016/08/31/autolayout的使用/" target="_blank" rel="external">shaop.github.io/2016/08/31/autolayout的使用/</a>
+                <a href="shaop.github.io/2016/09/01/实战(一)/" target="_blank" rel="external">shaop.github.io/2016/09/01/实战(一)/</a>
                 </p>
                 <footer><cite><a href="shaop.github.io">@shaop的博客</a></cite></footer>
             </blockquote>
@@ -253,19 +239,12 @@ initWithFrame:CGRectMake(0, 0, 20, 20)
             
 <nav class="post-nav">
   
-    <div class="waves-block waves-effect prev fl">
-      <a href="/2016/09/01/实战(一)/" id="post-prev" class="post-nav-link">
-        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">AutoLayout使用（实战一）</h4>
-      </a>
-    </div>
-  
 
   
     <div class="waves-block waves-effect next fr">
-      <a href="/2016/08/31/我的移动开发学习/" id="post-next" class="post-nav-link">
+      <a href="/2016/08/31/autolayout的使用/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">我的移动开发学习</h4>
+        <h4 class="title">AutoLayout的使用</h4>
       </a>
     </div>
   
@@ -276,7 +255,7 @@ initWithFrame:CGRectMake(0, 0, 20, 20)
             
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="autolayout的使用" data-title="AutoLayout的使用" data-url="shaop.github.io/2016/08/31/autolayout的使用/index.html"></div>
+	<div class="ds-thread" data-thread-key="实战(一)" data-title="AutoLayout使用（实战一）" data-url="shaop.github.io/2016/09/01/实战(一)/index.html"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
@@ -307,10 +286,10 @@ initWithFrame:CGRectMake(0, 0, 20, 20)
 
 <script>
 var BLOG_SHARE = {
-    title: "AutoLayout的使用",
+    title: "AutoLayout使用（实战一）",
     pic: "/img/header.JPG",
     summary: document.getElementsByName('summary')[0].content,
-    url: "shaop.github.io/2016/08/31/autolayout的使用/index.html"
+    url: "shaop.github.io/2016/09/01/实战(一)/index.html"
 };
 </script>
 <div class="global-share" id="global-share">
