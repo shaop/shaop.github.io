@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Masnory与自动布局的故事 | shaop的博客 | better</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="">
+  <meta name="description" content="前段时间太忙。没有时间更新，把之前整理的东西再拿出来好好整理一遍。这篇主要接上文。整理一下Masnory的使用。
+
+前言使用苹果自带的xib或者storyboard必然有很多方便的地方，但是仍然有时无法避免有些做不到的事情，或者做起来没有那么方便的事情，这时候代码布局就显得很重要了。关于Masnory的教程，网上有很多，这里先列举一些。
+
+学习官方文档总是没有错的
+CocoaChina 的 Ma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Masnory与自动布局的故事">
+<meta property="og:url" content="shaop.github.io/2017/03/16/Masnory/index.html">
+<meta property="og:site_name" content="shaop的博客">
+<meta property="og:description" content="前段时间太忙。没有时间更新，把之前整理的东西再拿出来好好整理一遍。这篇主要接上文。整理一下Masnory的使用。
+
+前言使用苹果自带的xib或者storyboard必然有很多方便的地方，但是仍然有时无法避免有些做不到的事情，或者做起来没有那么方便的事情，这时候代码布局就显得很重要了。关于Masnory的教程，网上有很多，这里先列举一些。
+
+学习官方文档总是没有错的
+CocoaChina 的 Ma">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669508280.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669472710.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669531488.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669566802.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669612795.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669636546.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489673920736.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489673961316.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669689828.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669716744.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669740739.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489671939476.png">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489671578093.png">
+<meta property="og:updated_time" content="2017-03-16T15:59:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Masnory与自动布局的故事">
+<meta name="twitter:description" content="前段时间太忙。没有时间更新，把之前整理的东西再拿出来好好整理一遍。这篇主要接上文。整理一下Masnory的使用。
+
+前言使用苹果自带的xib或者storyboard必然有很多方便的地方，但是仍然有时无法避免有些做不到的事情，或者做起来没有那么方便的事情，这时候代码布局就显得很重要了。关于Masnory的教程，网上有很多，这里先列举一些。
+
+学习官方文档总是没有错的
+CocoaChina 的 Ma">
+<meta name="twitter:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669508280.png">
+  
+    <link rel="alternative" href="/atom.xml" title="shaop的博客" type="application/atom+xml">
+  
+  <meta name="summary" content="null">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <nav id="menu" class="hide" >
+   <div class="inner flex-row-vertical">
+  <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+      <i class="icon icon-lg icon-close"></i>
+  </a>
+  <div class="brand-wrap">
+    <div class="brand">
+      <a href="/" class="avatar"><img src="/img/header.JPG"></a>
+      <hgroup class="introduce">
+        <h5 class="nickname">shaop</h5>
+        <a href="mailto:sxp644645107@gamil.com" title="sxp644645107@gamil.com" class="mail">sxp644645107@gamil.com</a>
+      </hgroup>
+    </div>
+  </div>
+  <ul class="nav flex-col">
+    
+        <li class="waves-block waves-effect">
+          <a href="/"  >
+            <i class="icon icon-lg icon-home"></i>
+            主页
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/archives"  >
+            <i class="icon icon-lg icon-archives"></i>
+            归档
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/tags"  >
+            <i class="icon icon-lg icon-tags"></i>
+            标签
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="https://github.com/shaop" target="_blank" >
+            <i class="icon icon-lg icon-github"></i>
+            Github
+          </a>
+        </li>
+    
+  </ul>
+
+  <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>shaop的博客 &copy; 2017</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+</div>
+
+  </nav>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Masnory与自动布局的故事</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input " autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header">
+  <div class="container">
+    <h1 class="author">Masnory与自动布局的故事</h1>
+    <h5 class="subtitle">
+        
+            <time datetime="2017-03-16T12:29:45.000Z" itemprop="datePublished" class="page-time">
+  2017-03-16
+</time>
+
+
+        
+    </h5>
+  </div>
+</header>
+
+    <div class="container body-wrap">
+      <article id="post-Masnory" 
+  class="article article-type-post" itemprop="blogPost">
+    <div class="post-meta flex-row">
+        
+    </div>
+    <div class="post-body">
+        <aside class="post-widget" id="post-widget">
+
+            
+            <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+            
+
+            
+            <nav class="post-toc-wrap" id="post-toc">
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#简单使用"><span class="post-toc-text">简单使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#方法"><span class="post-toc-text">方法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#属性"><span class="post-toc-text">属性</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#例子用法："><span class="post-toc-text">例子用法：</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一些比较有用的方法和属性"><span class="post-toc-text">一些比较有用的方法和属性</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#计算公共父容器方法"><span class="post-toc-text">计算公共父容器方法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#intrinsicContentSize"><span class="post-toc-text">intrinsicContentSize</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#UITableViewAutomaticDimension"><span class="post-toc-text">UITableViewAutomaticDimension</span></a></li></ol></li></ol>
+            </nav>
+            
+        </aside>
+
+        <div class="post-main">
+
+            <div class="post-content" id="post-content" itemprop="postContent">
+            <blockquote>
+<p>前段时间太忙。没有时间更新，把之前整理的东西再拿出来好好整理一遍。这篇主要接上文。整理一下Masnory的使用。</p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>使用苹果自带的<strong>xib</strong>或者<strong>storyboard</strong>必然有很多方便的地方，但是仍然有时无法避免有些做不到的事情，或者做起来没有那么方便的事情，这时候代码布局就显得很重要了。关于Masnory的教程，网上有很多，这里先列举一些。</p>
+<ul>
+<li><a href="https://github.com/SnapKit/Masonry" target="_blank" rel="external">学习官方文档总是没有错的</a></li>
+<li><a href="http://www.cocoachina.com/ios/20141219/10702.html" target="_blank" rel="external">CocoaChina 的 Masnory 教程</a></li>
+</ul>
+<p>在这里，简单总结一些Masnory的方法，以及一些不太用到的方法。</p>
+<h2 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h2><p>在阅读完并完成相关安装步骤后，可以先从Masnory类的方法和属性来看起。</p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>先是3个基础方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//设置约束</div><div class="line">- (NSArray *)mas_makeConstraints:(void(^)(MASConstraintMaker *make))block;</div><div class="line"></div><div class="line">//更新约束</div><div class="line">- (NSArray *)mas_updateConstraints:(void(^)(MASConstraintMaker *make))block;</div><div class="line"></div><div class="line">//重新设置约束</div><div class="line">- (NSArray *)mas_remakeConstraints:(void(^)(MASConstraintMaker *make))block;</div></pre></td></tr></table></figure>
+<p>使用如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">  _businessLabel = [UILabel new];</div><div class="line">  [self addSubview:_businessLabel];</div><div class="line">  </div><div class="line">  //设置约束</div><div class="line">  [_businessLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">//设置一些约束</div><div class="line">  &#125;];</div><div class="line"></div><div class="line">  //更新约束</div><div class="line">  [_businessLabel mas_updateConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">//设置一些约束</div><div class="line">  &#125;];</div><div class="line"></div><div class="line">  //重新设置约束</div><div class="line">  [_businessLabel mas_remakeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">//设置一些约束</div><div class="line">  &#125;];</div></pre></td></tr></table></figure>
+<p>掌握着三个方法，基本上就能掌握日常使用的一些基本布局了</p>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p>既然是自动布局，那其中的属性必然和storyboard中的约束有着联系，这边简单做一个的映射关系。</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>解释</th>
+<th>对应autolayout</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>left</td>
+<td>左边距</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669508280.png" width="146"></td>
+</tr>
+<tr>
+<td>top</td>
+<td>上边距</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669472710.png" width="146"></td>
+</tr>
+<tr>
+<td>right</td>
+<td>右边距</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669531488.png" width="146"></td>
+</tr>
+<tr>
+<td>bottom</td>
+<td>下边距</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669566802.png" width="146"></td>
+</tr>
+<tr>
+<td>leading</td>
+<td>顶部边距</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669612795.png" width="163"></td>
+</tr>
+<tr>
+<td>trailing</td>
+<td>尾部边距</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669636546.png" width="163"></td>
+</tr>
+<tr>
+<td>width</td>
+<td>宽度</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489673920736.png" width="146"></td>
+</tr>
+<tr>
+<td>height</td>
+<td>长度</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489673961316.png" width="146"></td>
+</tr>
+<tr>
+<td>centerX</td>
+<td>X轴居中</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669689828.png" width="163"></td>
+</tr>
+<tr>
+<td>centerY</td>
+<td>Y轴居中</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669716744.png" width="163"></td>
+</tr>
+<tr>
+<td>baseline</td>
+<td>基准线</td>
+<td><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489669740739.png" width="163"></td>
+</tr>
+<tr>
+<td>edges</td>
+<td>上左下右边距</td>
+<td></td>
+</tr>
+<tr>
+<td>size</td>
+<td>长和宽</td>
+<td></td>
+</tr>
+<tr>
+<td>center</td>
+<td>XY轴居中</td>
+</tr>
+</tbody>
+</table>
+<h3 id="例子用法："><a href="#例子用法：" class="headerlink" title="例子用法："></a>例子用法：</h3><p>要实现如图的布局</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489671939476.png" width="356"></p>
+<p>在 xib 获取 storyboard 中可能是这样的</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1489671578093.png" width="205"></p>
+<p>使用Masnory可以如下键入代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">UIView *view1 = [UIView new];</div><div class="line">view1.backgroundColor = [UIColor blueColor];</div><div class="line">[self.view addSubview:view1];</div><div class="line"></div><div class="line">[view1 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">    make.top.equalTo(ws.view.mas_top).offset(10);</div><div class="line">    make.left.equalTo(ws.view.mas_left).offset(8);</div><div class="line">    make.size.mas_equalTo(CGSizeMake(100, 100));</div><div class="line">&#125;];</div><div class="line"></div><div class="line">UIView *view2 = [UIView new];</div><div class="line">view2.backgroundColor = [UIColor yellowColor];</div><div class="line">[self.view addSubview:view2];</div><div class="line"></div><div class="line">[view2 mas_makeConstraints:^(MASConstraintMaker *make) &#123;</div><div class="line">    make.top.equalTo(view1.mas_top);</div><div class="line">    make.left.equalTo(view1.mas_right).offset(16);</div><div class="line">    make.right.equalTo(ws.view.mas_right).offset(-8);</div><div class="line">    make.height.equalTo(view1.mas_height);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p>还有一些后续版本中加入的方法，是针对控制器（ViewControll）的，而不是针对 view 的。通常用于 navbar 和tabbar 相关 </p>
+<ul>
+<li>mas_topLayoutGuide   </li>
+<li>mas_bottomLayoutGuide</li>
+<li>mas_topLayoutGuideTop</li>
+<li>mas_topLayoutGuideBottom</li>
+<li>mas_bottomLayoutGuideTop</li>
+<li>mas_bottomLayoutGuideBottom</li>
+</ul>
+<h2 id="一些比较有用的方法和属性"><a href="#一些比较有用的方法和属性" class="headerlink" title="一些比较有用的方法和属性"></a>一些比较有用的方法和属性</h2><h3 id="计算公共父容器方法"><a href="#计算公共父容器方法" class="headerlink" title="计算公共父容器方法"></a>计算公共父容器方法</h3><p><code>- (instancetype)mas_closestCommonSuperview:(MAS_VIEW *)view;</code></p>
+<p>该方法是在<code>View+MASAdditions</code>中的，因此，该方法返回的是一个UIView。从官方的注解中看，该方法是寻找两个视图的最近的公共父视图。</p>
+<p>例如：</p>
+<p>在 <strong>viewA</strong> 上添加 <strong>viewB</strong> 和 <strong>viewC</strong> </p>
+<p>在 <strong>viewB</strong> 上添加 <strong>viewD</strong> 和 <strong>viewE</strong></p>
+<p>那么<strong>viewB</strong> 是 <strong>viewD</strong> 和 <strong>viewE</strong> 最近的公共父视图。<strong>viewA</strong> 是 <strong>viewD</strong> 和 <strong>viewC</strong> 最近的公共父视图</p>
+<p>代码验证一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">UIView *viewA = [UIView new];</div><div class="line">[self.view addSubview:viewA];</div><div class="line"></div><div class="line">//===========================</div><div class="line"></div><div class="line">UIView *viewB = [UIView new];</div><div class="line">[viewA addSubview:viewB];</div><div class="line"></div><div class="line">UIView *viewC = [UIView new];</div><div class="line">[viewA addSubview:viewC];</div><div class="line"></div><div class="line">//===========================</div><div class="line"></div><div class="line">UIView *viewD = [UIView new];</div><div class="line">[viewB addSubview:viewD];</div><div class="line"></div><div class="line">UIView *viewE = [UIView new];</div><div class="line">[viewB addSubview:viewE];</div><div class="line"></div><div class="line">if ([[viewD mas_closestCommonSuperview:viewE] isEqual:viewB]) &#123;</div><div class="line">    NSLog(@&quot;viewB是viewD和viewE最近的父视图&quot;);</div><div class="line">&#125;else&#123;</div><div class="line">    NSLog(@&quot;viewB不是viewD和viewE最近的父视图&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">if ([[viewD mas_closestCommonSuperview:viewC] isEqual:viewA]) &#123;</div><div class="line">    NSLog(@&quot;viewA是viewD和viewC最近的父视图&quot;);</div><div class="line">&#125;else&#123;</div><div class="line">    NSLog(@&quot;viewA不是viewD和viewC最近的父视图&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[10276:1157366] viewB是最近的父视图</div><div class="line">[10276:1157366] viewA是最近的父视图</div></pre></td></tr></table></figure>
+<h3 id="intrinsicContentSize"><a href="#intrinsicContentSize" class="headerlink" title="intrinsicContentSize"></a>intrinsicContentSize</h3><p>让 view 有一个默认的长和宽，他会根据约束来改变其值，类似于 <code>UILabel</code> 不过这也和约束优先级有关，<a href="http://blog.csdn.net/miao033009/article/details/46876973" target="_blank" rel="external">这里</a> 有篇文章介绍的不错。之前看到有人用它来做 <code>UITableViewCell</code> 的自适应，我觉得不是特别需要。如果项目需求是在 iOS8 以上的话，可以使用下面的方法来做自适应。</p>
+<h3 id="UITableViewAutomaticDimension"><a href="#UITableViewAutomaticDimension" class="headerlink" title="UITableViewAutomaticDimension"></a>UITableViewAutomaticDimension</h3><p>iOS8以上的项目，如果 UITableView 不是特别复杂的话，可以使用 <code>UITableViewAutomaticDimension</code> 来进行适配。使用方法如下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView&#123;</div><div class="line">    return 1;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section&#123;</div><div class="line">    return 1;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath&#123;</div><div class="line">    //预测高度</div><div class="line">    return 44;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath&#123;</div><div class="line">    // 自动计算高度</div><div class="line">    return UITableViewAutomaticDimension;</div><div class="line">&#125;</div><div class="line"></div><div class="line">-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath&#123;</div><div class="line">    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@&quot;cell&quot; forIndexPath:indexPath];</div><div class="line">    </div><div class="line">    return cell;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这篇先总结到这里。后面持续更新一些UI上会使用到的小技巧。</p>
+
+            <blockquote>
+                <p>
+                本文地址：
+                <a href="shaop.github.io/2017/03/16/Masnory/" target="_blank" rel="external">shaop.github.io/2017/03/16/Masnory/</a>
+                </p>
+                <footer><cite><a href="shaop.github.io">@shaop的博客</a></cite></footer>
+            </blockquote>
+            </div>
+            
+<nav class="post-nav">
+  
+
+  
+    <div class="waves-block waves-effect next fr">
+      <a href="/2016/09/04/autolayout实战（二）/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">AutoLayout实战（实战二）</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+            
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Masnory" data-title="Masnory与自动布局的故事" data-url="shaop.github.io/2017/03/16/Masnory/index.html"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"shaop"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+        </div>
+    </div>
+</article>
+    </div>
+  </main>
+<div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "Masnory与自动布局的故事",
+    pic: "/img/header.JPG",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "shaop.github.io/2017/03/16/Masnory/index.html"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<script type="text/template" id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</script>
+
+<script src="/js/search.js"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
