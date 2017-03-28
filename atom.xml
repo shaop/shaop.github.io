@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="shaop.github.io/"/>
-  <updated>2017-03-16T15:59:55.000Z</updated>
+  <updated>2017-03-28T12:33:55.000Z</updated>
   <id>shaop.github.io/</id>
   
   <author>
@@ -14,6 +14,80 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>唐巧《ios开发进阶》笔记</title>
+    <link href="shaop.github.io/2017/03/28/%E5%94%90%E5%B7%A7%E3%80%8Aios%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6%E3%80%8B%E7%AC%94%E8%AE%B0/"/>
+    <id>shaop.github.io/2017/03/28/唐巧《ios开发进阶》笔记/</id>
+    <published>2017-03-28T12:29:11.000Z</published>
+    <updated>2017-03-28T12:33:55.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>之前书读的很多。但是感觉没有有效的记录一些有用的东西，现在开始记录一些我认为的重点。方便以后查找。</p>
+</blockquote>
+<h2 id="阅后小感"><a href="#阅后小感" class="headerlink" title="阅后小感"></a>阅后小感</h2><p>买这本书时还出处于刚开始进阶。我觉得这本书对于刚开始进阶的人还有所有用处的。因为这本书虽然涉及面广，所涉及的深度并没有太深。而且知识点也有点老。</p>
+<blockquote>
+<p>就连巧神也说。他这本书现在太旧了。不适合购买。</p>
+</blockquote>
+<h2 id="实用工具篇"><a href="#实用工具篇" class="headerlink" title="实用工具篇"></a>实用工具篇</h2><p>在这里简述了很多实用的工具。简单做下简介。</p>
+<h3 id="CocoaPods"><a href="#CocoaPods" class="headerlink" title="CocoaPods"></a>CocoaPods</h3><p>这个实在太普遍了。项目中使用也是很方便。但仍然有一些人喜欢使用手动集成的方法。具体介绍网上太多。不详细写了。</p>
+<p>关于 <code>pod install</code> 和 <code>pod update</code> 书中没有写。之前有个学弟和我说起这个。但是感觉理解是错误的。所以做个记号。</p>
+<ul>
+<li><p><code>pod install</code> 表示，如果有 Podfile.lock 文件，则更新为 Podfile.lock 内指定版本的库文件，如果没有 pod.lock 文件，则更新到网络上最新的库</p>
+</li>
+<li><p><code>pod update</code> 表示无视 Podfile.lock 文件。将库文件更新到最新库的版本</p>
+</li>
+</ul>
+<h3 id="Charles-抓包工具"><a href="#Charles-抓包工具" class="headerlink" title="Charles 抓包工具"></a>Charles 抓包工具</h3><p>使用简介在<a href="http://blog.devtang.com/2015/11/14/charles-introduction/" target="_blank" rel="external">唐巧的博客</a> 上有,应该是目前网上最全的 Charles 教程。</p>
+<h3 id="Reveal-界面调试工具"><a href="#Reveal-界面调试工具" class="headerlink" title="Reveal 界面调试工具"></a>Reveal 界面调试工具</h3><p>很强大的解析 app 界面的工具。有了它。就可以知道一些大的app的布局是怎么样的。但是前提是设备需要越狱。目前手上没有已越狱的设备。还没试过。等下次越狱的时候再做记录。</p>
+<h3 id="一些日志收集和统计工具"><a href="#一些日志收集和统计工具" class="headerlink" title="一些日志收集和统计工具"></a>一些日志收集和统计工具</h3><p>国内这两年用友盟用的比较多。知道这些工具之后还是拓展了下知识面。</p>
+<h3 id="Xcode-插件"><a href="#Xcode-插件" class="headerlink" title="Xcode 插件"></a>Xcode 插件</h3><p>Xcode 8 已经不支持插件了。网上有些偏门的方法来做到使用插件。但是我也不太习惯。如果硬是要用的话。可以退回到 Xcode 7 的版本。</p>
+<blockquote>
+<p>还有些其他工具很细小。不做列举</p>
+</blockquote>
+<h2 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h2><h3 id="UIWindow-使用"><a href="#UIWindow-使用" class="headerlink" title="UIWindow 使用"></a>UIWindow 使用</h3><p>UIWindow 继承自 UIView 所以它包含所有 UIView 的特性，其作用有以下2点：</p>
+<ol>
+<li>作为顶层容器，来包含所有的 View</li>
+<li>传递触摸消息给其他的 View</li>
+</ol>
+<h4 id="UIWindow-的层级"><a href="#UIWindow-的层级" class="headerlink" title="UIWindow 的层级"></a>UIWindow 的层级</h4><p>并不是所有新建的 UIWindow 都是在最顶层的。UIWindow 有 <code>UIWindowLevel</code> 属性，来设置它的显示位置</p>
+<blockquote>
+<p>不能滥用 UIWindow ，如果不是为了在所有页面上都显示一个 View 的话。尽量不要使用 UIWindow 不然新创建的 UIWindow 会得不到释放。 类似于MBProgress 组件，会让你指定一个显示 View ，用于更好的显示</p>
+</blockquote>
+<h3 id="动态下载字体"><a href="#动态下载字体" class="headerlink" title="动态下载字体"></a>动态下载字体</h3><p>苹果官方提供了一部分特殊的中文字体。可以通过应用内下载的方式集成到 app 中。</p>
+<h3 id="应用内安全"><a href="#应用内安全" class="headerlink" title="应用内安全"></a>应用内安全</h3><p>除了使用 https 以外，对于隐私和敏感数据的保护尤为重要。总结如下几点：</p>
+<ol>
+<li>用户密码明文形式很容易通过 Charels 来截取，应该通过加密公钥和私钥的方式来获取。服务器使用私钥解码后，再加盐后多次 md5 。</li>
+<li>对通信协议进行加密。可以保证协议不会被轻易读取出来。（Protobuf 谷歌提供的开源数据交换格式）</li>
+<li>对于一些配置数据，我们不应该直接把它们放在资源文件中。（例如 js 文件）应该进行适当加密</li>
+<li>对于一些用户数据，我们更应该加他们使用 keychain 保护起来。</li>
+<li>对于反编译，或许采取一些混淆的反汇编手段会来的更好。</li>
+</ol>
+<h2 id="比较重要的小技巧"><a href="#比较重要的小技巧" class="headerlink" title="比较重要的小技巧"></a>比较重要的小技巧</h2><p>在书中第18章中列举了很多小技巧。这里只记录几个我觉得比较重要。并且实用性比较高的</p>
+<ol>
+<li><p>Daily Build 在唐巧的博客中也有。<em>**</em>链接 添加Daily Build 真的是件很幸福的事。希望以后有机会我能多尝试一些脚本语言来进行一些处理日常事务上的事</p>
+</li>
+<li><p>代码片段管理。 书中介绍了配置自己的代码片段。但是会不会配合 Alare 操作起来会更好？</p>
+</li>
+<li><p>快捷键。更推荐趣直播 张星宇 的直播。大大提升开发效率。</p>
+</li>
+</ol>
+<blockquote>
+<p>最后，本书中还有包括 <strong>内存管理</strong> 、<strong>GDC</strong> 、 <strong>底层开发</strong> 都放到了后续《 iOS 与 OS X 多线程和内存管理》一书中详解。还有一部分 <strong>CoreText 排版引擎</strong> 后续有机会整理出来单独写一篇。这个可以学习的东西还有很多。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;之前书读的很多。但是感觉没有有效的记录一些有用的东西，现在开始记录一些我认为的重点。方便以后查找。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;阅后小感&quot;&gt;&lt;a href=&quot;#阅后小感&quot; class=&quot;headerlink&quot; title=&quot;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Masnory与自动布局的故事</title>

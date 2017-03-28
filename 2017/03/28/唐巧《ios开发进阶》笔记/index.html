@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>唐巧《ios开发进阶》笔记 | shaop的博客 | better</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="">
+  <meta name="description" content="之前书读的很多。但是感觉没有有效的记录一些有用的东西，现在开始记录一些我认为的重点。方便以后查找。
+
+阅后小感买这本书时还出处于刚开始进阶。我觉得这本书对于刚开始进阶的人还有所有用处的。因为这本书虽然涉及面广，所涉及的深度并没有太深。而且知识点也有点老。
+
+就连巧神也说。他这本书现在太旧了。不适合购买。
+
+实用工具篇在这里简述了很多实用的工具。简单做下简介。
+CocoaPods这个实在太普遍了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="唐巧《ios开发进阶》笔记">
+<meta property="og:url" content="shaop.github.io/2017/03/28/唐巧《ios开发进阶》笔记/index.html">
+<meta property="og:site_name" content="shaop的博客">
+<meta property="og:description" content="之前书读的很多。但是感觉没有有效的记录一些有用的东西，现在开始记录一些我认为的重点。方便以后查找。
+
+阅后小感买这本书时还出处于刚开始进阶。我觉得这本书对于刚开始进阶的人还有所有用处的。因为这本书虽然涉及面广，所涉及的深度并没有太深。而且知识点也有点老。
+
+就连巧神也说。他这本书现在太旧了。不适合购买。
+
+实用工具篇在这里简述了很多实用的工具。简单做下简介。
+CocoaPods这个实在太普遍了。">
+<meta property="og:updated_time" content="2017-03-28T12:33:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="唐巧《ios开发进阶》笔记">
+<meta name="twitter:description" content="之前书读的很多。但是感觉没有有效的记录一些有用的东西，现在开始记录一些我认为的重点。方便以后查找。
+
+阅后小感买这本书时还出处于刚开始进阶。我觉得这本书对于刚开始进阶的人还有所有用处的。因为这本书虽然涉及面广，所涉及的深度并没有太深。而且知识点也有点老。
+
+就连巧神也说。他这本书现在太旧了。不适合购买。
+
+实用工具篇在这里简述了很多实用的工具。简单做下简介。
+CocoaPods这个实在太普遍了。">
+  
+    <link rel="alternative" href="/atom.xml" title="shaop的博客" type="application/atom+xml">
+  
+  <meta name="summary" content="null">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <nav id="menu" class="hide" >
+   <div class="inner flex-row-vertical">
+  <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+      <i class="icon icon-lg icon-close"></i>
+  </a>
+  <div class="brand-wrap">
+    <div class="brand">
+      <a href="/" class="avatar"><img src="/img/header.JPG"></a>
+      <hgroup class="introduce">
+        <h5 class="nickname">shaop</h5>
+        <a href="mailto:sxp644645107@gamil.com" title="sxp644645107@gamil.com" class="mail">sxp644645107@gamil.com</a>
+      </hgroup>
+    </div>
+  </div>
+  <ul class="nav flex-col">
+    
+        <li class="waves-block waves-effect">
+          <a href="/"  >
+            <i class="icon icon-lg icon-home"></i>
+            主页
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/archives"  >
+            <i class="icon icon-lg icon-archives"></i>
+            归档
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/tags"  >
+            <i class="icon icon-lg icon-tags"></i>
+            标签
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="https://github.com/shaop" target="_blank" >
+            <i class="icon icon-lg icon-github"></i>
+            Github
+          </a>
+        </li>
+    
+  </ul>
+
+  <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>shaop的博客 &copy; 2017</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+</div>
+
+  </nav>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">唐巧《ios开发进阶》笔记</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input " autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header">
+  <div class="container">
+    <h1 class="author">唐巧《ios开发进阶》笔记</h1>
+    <h5 class="subtitle">
+        
+            <time datetime="2017-03-28T12:29:11.000Z" itemprop="datePublished" class="page-time">
+  2017-03-28
+</time>
+
+
+        
+    </h5>
+  </div>
+</header>
+
+    <div class="container body-wrap">
+      <article id="post-唐巧《ios开发进阶》笔记" 
+  class="article article-type-post" itemprop="blogPost">
+    <div class="post-meta flex-row">
+        
+    </div>
+    <div class="post-body">
+        <aside class="post-widget" id="post-widget">
+
+            
+            <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+            
+
+            
+            <nav class="post-toc-wrap" id="post-toc">
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#阅后小感"><span class="post-toc-text">阅后小感</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实用工具篇"><span class="post-toc-text">实用工具篇</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#CocoaPods"><span class="post-toc-text">CocoaPods</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Charles-抓包工具"><span class="post-toc-text">Charles 抓包工具</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Reveal-界面调试工具"><span class="post-toc-text">Reveal 界面调试工具</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一些日志收集和统计工具"><span class="post-toc-text">一些日志收集和统计工具</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Xcode-插件"><span class="post-toc-text">Xcode 插件</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#开发"><span class="post-toc-text">开发</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#UIWindow-使用"><span class="post-toc-text">UIWindow 使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UIWindow-的层级"><span class="post-toc-text">UIWindow 的层级</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#动态下载字体"><span class="post-toc-text">动态下载字体</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#应用内安全"><span class="post-toc-text">应用内安全</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#比较重要的小技巧"><span class="post-toc-text">比较重要的小技巧</span></a></li></ol>
+            </nav>
+            
+        </aside>
+
+        <div class="post-main">
+
+            <div class="post-content" id="post-content" itemprop="postContent">
+            <blockquote>
+<p>之前书读的很多。但是感觉没有有效的记录一些有用的东西，现在开始记录一些我认为的重点。方便以后查找。</p>
+</blockquote>
+<h2 id="阅后小感"><a href="#阅后小感" class="headerlink" title="阅后小感"></a>阅后小感</h2><p>买这本书时还出处于刚开始进阶。我觉得这本书对于刚开始进阶的人还有所有用处的。因为这本书虽然涉及面广，所涉及的深度并没有太深。而且知识点也有点老。</p>
+<blockquote>
+<p>就连巧神也说。他这本书现在太旧了。不适合购买。</p>
+</blockquote>
+<h2 id="实用工具篇"><a href="#实用工具篇" class="headerlink" title="实用工具篇"></a>实用工具篇</h2><p>在这里简述了很多实用的工具。简单做下简介。</p>
+<h3 id="CocoaPods"><a href="#CocoaPods" class="headerlink" title="CocoaPods"></a>CocoaPods</h3><p>这个实在太普遍了。项目中使用也是很方便。但仍然有一些人喜欢使用手动集成的方法。具体介绍网上太多。不详细写了。</p>
+<p>关于 <code>pod install</code> 和 <code>pod update</code> 书中没有写。之前有个学弟和我说起这个。但是感觉理解是错误的。所以做个记号。</p>
+<ul>
+<li><p><code>pod install</code> 表示，如果有 Podfile.lock 文件，则更新为 Podfile.lock 内指定版本的库文件，如果没有 pod.lock 文件，则更新到网络上最新的库</p>
+</li>
+<li><p><code>pod update</code> 表示无视 Podfile.lock 文件。将库文件更新到最新库的版本</p>
+</li>
+</ul>
+<h3 id="Charles-抓包工具"><a href="#Charles-抓包工具" class="headerlink" title="Charles 抓包工具"></a>Charles 抓包工具</h3><p>使用简介在<a href="http://blog.devtang.com/2015/11/14/charles-introduction/" target="_blank" rel="external">唐巧的博客</a> 上有,应该是目前网上最全的 Charles 教程。</p>
+<h3 id="Reveal-界面调试工具"><a href="#Reveal-界面调试工具" class="headerlink" title="Reveal 界面调试工具"></a>Reveal 界面调试工具</h3><p>很强大的解析 app 界面的工具。有了它。就可以知道一些大的app的布局是怎么样的。但是前提是设备需要越狱。目前手上没有已越狱的设备。还没试过。等下次越狱的时候再做记录。</p>
+<h3 id="一些日志收集和统计工具"><a href="#一些日志收集和统计工具" class="headerlink" title="一些日志收集和统计工具"></a>一些日志收集和统计工具</h3><p>国内这两年用友盟用的比较多。知道这些工具之后还是拓展了下知识面。</p>
+<h3 id="Xcode-插件"><a href="#Xcode-插件" class="headerlink" title="Xcode 插件"></a>Xcode 插件</h3><p>Xcode 8 已经不支持插件了。网上有些偏门的方法来做到使用插件。但是我也不太习惯。如果硬是要用的话。可以退回到 Xcode 7 的版本。</p>
+<blockquote>
+<p>还有些其他工具很细小。不做列举</p>
+</blockquote>
+<h2 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h2><h3 id="UIWindow-使用"><a href="#UIWindow-使用" class="headerlink" title="UIWindow 使用"></a>UIWindow 使用</h3><p>UIWindow 继承自 UIView 所以它包含所有 UIView 的特性，其作用有以下2点：</p>
+<ol>
+<li>作为顶层容器，来包含所有的 View</li>
+<li>传递触摸消息给其他的 View</li>
+</ol>
+<h4 id="UIWindow-的层级"><a href="#UIWindow-的层级" class="headerlink" title="UIWindow 的层级"></a>UIWindow 的层级</h4><p>并不是所有新建的 UIWindow 都是在最顶层的。UIWindow 有 <code>UIWindowLevel</code> 属性，来设置它的显示位置</p>
+<blockquote>
+<p>不能滥用 UIWindow ，如果不是为了在所有页面上都显示一个 View 的话。尽量不要使用 UIWindow 不然新创建的 UIWindow 会得不到释放。 类似于MBProgress 组件，会让你指定一个显示 View ，用于更好的显示</p>
+</blockquote>
+<h3 id="动态下载字体"><a href="#动态下载字体" class="headerlink" title="动态下载字体"></a>动态下载字体</h3><p>苹果官方提供了一部分特殊的中文字体。可以通过应用内下载的方式集成到 app 中。</p>
+<h3 id="应用内安全"><a href="#应用内安全" class="headerlink" title="应用内安全"></a>应用内安全</h3><p>除了使用 https 以外，对于隐私和敏感数据的保护尤为重要。总结如下几点：</p>
+<ol>
+<li>用户密码明文形式很容易通过 Charels 来截取，应该通过加密公钥和私钥的方式来获取。服务器使用私钥解码后，再加盐后多次 md5 。</li>
+<li>对通信协议进行加密。可以保证协议不会被轻易读取出来。（Protobuf 谷歌提供的开源数据交换格式）</li>
+<li>对于一些配置数据，我们不应该直接把它们放在资源文件中。（例如 js 文件）应该进行适当加密</li>
+<li>对于一些用户数据，我们更应该加他们使用 keychain 保护起来。</li>
+<li>对于反编译，或许采取一些混淆的反汇编手段会来的更好。</li>
+</ol>
+<h2 id="比较重要的小技巧"><a href="#比较重要的小技巧" class="headerlink" title="比较重要的小技巧"></a>比较重要的小技巧</h2><p>在书中第18章中列举了很多小技巧。这里只记录几个我觉得比较重要。并且实用性比较高的</p>
+<ol>
+<li><p>Daily Build 在唐巧的博客中也有。<em>**</em>链接 添加Daily Build 真的是件很幸福的事。希望以后有机会我能多尝试一些脚本语言来进行一些处理日常事务上的事</p>
+</li>
+<li><p>代码片段管理。 书中介绍了配置自己的代码片段。但是会不会配合 Alare 操作起来会更好？</p>
+</li>
+<li><p>快捷键。更推荐趣直播 张星宇 的直播。大大提升开发效率。</p>
+</li>
+</ol>
+<blockquote>
+<p>最后，本书中还有包括 <strong>内存管理</strong> 、<strong>GDC</strong> 、 <strong>底层开发</strong> 都放到了后续《 iOS 与 OS X 多线程和内存管理》一书中详解。还有一部分 <strong>CoreText 排版引擎</strong> 后续有机会整理出来单独写一篇。这个可以学习的东西还有很多。</p>
+</blockquote>
+
+            <blockquote>
+                <p>
+                本文地址：
+                <a href="shaop.github.io/2017/03/28/唐巧《ios开发进阶》笔记/" target="_blank" rel="external">shaop.github.io/2017/03/28/唐巧《ios开发进阶》笔记/</a>
+                </p>
+                <footer><cite><a href="shaop.github.io">@shaop的博客</a></cite></footer>
+            </blockquote>
+            </div>
+            
+<nav class="post-nav">
+  
+
+  
+    <div class="waves-block waves-effect next fr">
+      <a href="/2017/03/16/Masnory/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Masnory与自动布局的故事</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+            
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="唐巧《ios开发进阶》笔记" data-title="唐巧《ios开发进阶》笔记" data-url="shaop.github.io/2017/03/28/唐巧《ios开发进阶》笔记/index.html"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"shaop"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+        </div>
+    </div>
+</article>
+    </div>
+  </main>
+<div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "唐巧《ios开发进阶》笔记",
+    pic: "/img/header.JPG",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "shaop.github.io/2017/03/28/唐巧《ios开发进阶》笔记/index.html"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<script type="text/template" id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</script>
+
+<script src="/js/search.js"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
