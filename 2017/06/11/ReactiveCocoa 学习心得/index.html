@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ReactiveCocoa 学习心得 | shaop的博客 | better</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="">
+  <meta name="description" content="基础认识信号：发送一个动作，让订阅这个信号的订阅者接收这些动作。只要有改变，信号内部接受数据就会马上发送数据
+订阅：订阅后方可接受信号内的消息。
+命令：命令一般用于网络请求，内包含一些耗时的操作。结束后发送一个信号。
+一、RACSignal创建RACSignal .使用createSignal方法，可以构建一个方法，在block内部，使用subscriber(订阅者)发送信号在其他地方的signa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ReactiveCocoa 学习心得">
+<meta property="og:url" content="shaop.github.io/2017/06/11/ReactiveCocoa 学习心得/index.html">
+<meta property="og:site_name" content="shaop的博客">
+<meta property="og:description" content="基础认识信号：发送一个动作，让订阅这个信号的订阅者接收这些动作。只要有改变，信号内部接受数据就会马上发送数据
+订阅：订阅后方可接受信号内的消息。
+命令：命令一般用于网络请求，内包含一些耗时的操作。结束后发送一个信号。
+一、RACSignal创建RACSignal .使用createSignal方法，可以构建一个方法，在block内部，使用subscriber(订阅者)发送信号在其他地方的signa">
+<meta property="og:updated_time" content="2017-10-26T14:16:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ReactiveCocoa 学习心得">
+<meta name="twitter:description" content="基础认识信号：发送一个动作，让订阅这个信号的订阅者接收这些动作。只要有改变，信号内部接受数据就会马上发送数据
+订阅：订阅后方可接受信号内的消息。
+命令：命令一般用于网络请求，内包含一些耗时的操作。结束后发送一个信号。
+一、RACSignal创建RACSignal .使用createSignal方法，可以构建一个方法，在block内部，使用subscriber(订阅者)发送信号在其他地方的signa">
+  
+    <link rel="alternative" href="/atom.xml" title="shaop的博客" type="application/atom+xml">
+  
+  <meta name="summary" content="null">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <nav id="menu" class="hide" >
+   <div class="inner flex-row-vertical">
+  <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+      <i class="icon icon-lg icon-close"></i>
+  </a>
+  <div class="brand-wrap">
+    <div class="brand">
+      <a href="/" class="avatar"><img src="/img/header.JPG"></a>
+      <hgroup class="introduce">
+        <h5 class="nickname">shaop</h5>
+        <a href="mailto:sxp644645107@gamil.com" title="sxp644645107@gamil.com" class="mail">sxp644645107@gamil.com</a>
+      </hgroup>
+    </div>
+  </div>
+  <ul class="nav flex-col">
+    
+        <li class="waves-block waves-effect">
+          <a href="/"  >
+            <i class="icon icon-lg icon-home"></i>
+            主页
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/archives"  >
+            <i class="icon icon-lg icon-archives"></i>
+            归档
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/tags"  >
+            <i class="icon icon-lg icon-tags"></i>
+            标签
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="https://github.com/shaop" target="_blank" >
+            <i class="icon icon-lg icon-github"></i>
+            Github
+          </a>
+        </li>
+    
+  </ul>
+
+  <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>shaop的博客 &copy; 2017</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+</div>
+
+  </nav>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">ReactiveCocoa 学习心得</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input " autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header">
+  <div class="container">
+    <h1 class="author">ReactiveCocoa 学习心得</h1>
+    <h5 class="subtitle">
+        
+            <time datetime="2017-06-11T13:51:22.000Z" itemprop="datePublished" class="page-time">
+  2017-06-11
+</time>
+
+
+        
+    </h5>
+  </div>
+</header>
+
+    <div class="container body-wrap">
+      <article id="post-ReactiveCocoa 学习心得" 
+  class="article article-type-post" itemprop="blogPost">
+    <div class="post-meta flex-row">
+        
+    </div>
+    <div class="post-body">
+        <aside class="post-widget" id="post-widget">
+
+            
+            <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+            
+
+            
+            <nav class="post-toc-wrap" id="post-toc">
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基础认识"><span class="post-toc-text">基础认识</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、RACSignal"><span class="post-toc-text">一、RACSignal</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、RACSubject"><span class="post-toc-text">二、RACSubject</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用方法"><span class="post-toc-text">使用方法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用场景"><span class="post-toc-text">使用场景</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#三、RACCommand"><span class="post-toc-text">三、RACCommand</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#几个有趣的实用性方法"><span class="post-toc-text">几个有趣的实用性方法</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#几个重要的操作方法"><span class="post-toc-text">几个重要的操作方法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#map"><span class="post-toc-text">map</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#merge"><span class="post-toc-text">merge</span></a></li></ol></li></ol>
+            </nav>
+            
+        </aside>
+
+        <div class="post-main">
+
+            <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="基础认识"><a href="#基础认识" class="headerlink" title="基础认识"></a>基础认识</h2><p>信号：发送一个动作，让订阅这个信号的订阅者接收这些动作。只要有改变，信号内部接受数据就会马上发送数据</p>
+<p>订阅：订阅后方可接受信号内的消息。</p>
+<p>命令：命令一般用于网络请求，内包含一些耗时的操作。结束后发送一个信号。</p>
+<h2 id="一、RACSignal"><a href="#一、RACSignal" class="headerlink" title="一、RACSignal"></a>一、RACSignal</h2><p>创建<code>RACSignal</code> .使用<code>createSignal</code>方法，可以构建一个方法，在block内部，使用<code>subscriber(订阅者)</code>发送信号在其他地方的signal被订阅就会接受到信号内的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//创建信号</div><div class="line">RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">    [subscriber sendNext:@&quot;this is a signal&quot;];</div><div class="line">    [subscriber sendCompleted];</div><div class="line"></div><div class="line">    return [RACDisposable disposableWithBlock:^&#123;</div><div class="line">        NSLog(@&quot;信号在这里被终止了&quot;);</div><div class="line">    &#125;];</div><div class="line">&#125;];</div><div class="line"></div><div class="line">//订阅信号</div><div class="line">[signal subscribeNext:^(id x) &#123;</div><div class="line">    NSLog(@&quot;在这里接受到信号:%@&quot;,x);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p><em>控制台输出</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2017-01-05 21:42:36.422 learnRAC[1336:29812] 在这里接受到信号:this is a signal</div><div class="line">2017-01-05 21:42:36.423 learnRAC[1336:29812] 信号在这里被终止了</div></pre></td></tr></table></figure>
+<h2 id="二、RACSubject"><a href="#二、RACSubject" class="headerlink" title="二、RACSubject"></a>二、RACSubject</h2><h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p><strong>RACSubject</strong><br>信号提供者，自己可以充当信号，又能发送信号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//创建一个信号</div><div class="line">RACSubject *subject = [RACSubject subject];</div><div class="line"></div><div class="line">//订阅者接受消息</div><div class="line">[subject subscribeNext:^(id x) &#123;</div><div class="line">    NSLog(@&quot;第一个订阅者在这里接收到信号:%@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">[subject subscribeNext:^(id x) &#123;</div><div class="line">    NSLog(@&quot;第二个订阅者在这里接收到信号:%@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">//发送消息</div><div class="line">[subject sendNext:@&quot;一条消息&quot;];</div></pre></td></tr></table></figure>
+<p><em>控制台输出</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2017-01-05 23:01:13.401 learnRAC[1929:88074] 第一个订阅者在这里接收到信号:一条消息</div><div class="line">2017-01-05 23:01:13.404 learnRAC[1929:88074] 第二个订阅者在这里接收到信号:一条消息</div></pre></td></tr></table></figure></p>
+<p><strong>RACReplaySubject</strong><br><code>RACReplaySubject</code>允许先发送，后订阅。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">// 1.创建信号</div><div class="line">RACReplaySubject *replaySubject = [RACReplaySubject subject];</div><div class="line"></div><div class="line">// 2.发送信号</div><div class="line">[replaySubject sendNext:@1];</div><div class="line">[replaySubject sendNext:@2];</div><div class="line"></div><div class="line">// 3.订阅信号</div><div class="line">[replaySubject subscribeNext:^(id x) &#123;</div><div class="line"></div><div class="line">    NSLog(@&quot;第一个订阅者接收到的数据%@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">// 订阅信号</div><div class="line">[replaySubject subscribeNext:^(id x) &#123;</div><div class="line"></div><div class="line">    NSLog(@&quot;第二个订阅者接收到的数据%@&quot;,x);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p><strong>这里可以总结一下</strong></p>
+<ol>
+<li><code>subscribeNext:</code>方法是订阅者接受消息</li>
+<li><code>sendNext:</code>方法是订阅者发送消息</li>
+</ol>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>RACSubject可以用来代替delegate 。方便实现代理的功能。<br>使用方法如下</p>
+<p><strong>viewController1.m</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender&#123;</div><div class="line">    SecondViewController *vc = segue.destinationViewController;</div><div class="line">    vc.delegate = [RACSubject subject];</div><div class="line">    [vc.delegate subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;按钮被点击%@&quot;,x);</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>viewController2.h</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#import &lt;UIKit/UIKit.h&gt;</div><div class="line"></div><div class="line">@interface viewController2 : UIViewController</div><div class="line">@property (nonatomic , strong) RACSubject *delegate;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p><strong>viewController2.m</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (IBAction)ClickAction:(id)sender &#123;</div><div class="line">    if (self.delegate) &#123;</div><div class="line">        [self.delegate sendNext:@&quot;this is a msg&quot;];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><em>控制台输出</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017-01-05 22:57:55.701 learnRAC[1874:84684] 按钮被点击this is a msg</div></pre></td></tr></table></figure></p>
+<p>用这种方式，比直接写delegate方法要来的快得多。</p>
+<h2 id="三、RACCommand"><a href="#三、RACCommand" class="headerlink" title="三、RACCommand"></a>三、RACCommand</h2><p><code>RACCommand</code>从字面意思上是一个命令，其主要应用场景在于应用一些耗时的操作，例如网络操作，之后再发送一个信号，进行消息数据的传递。</p>
+<p><strong>例子</strong><br>模仿一个viewmodel的网络操作，获取数据后传递给viewController进行数据显示。<br><strong>viewmodel</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">-(void)doNetWork&#123;</div><div class="line">    if (self = [super init]) &#123;</div><div class="line">        RACCommand *command = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) &#123;</div><div class="line">            </div><div class="line">            NSLog(@&quot;这里执行了一段网络请求获取到的input是：%@&quot;,input);</div><div class="line">            NSString *data = @&quot;返回数据&quot;;</div><div class="line"></div><div class="line">            return [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">                [subscriber sendNext:data];</div><div class="line">                [subscriber sendCompleted];</div><div class="line">                return [RACDisposable disposableWithBlock:^&#123;</div><div class="line">                    NSLog(@&quot;销毁了信号&quot;);</div><div class="line">                &#125;];</div><div class="line">            &#125;];</div><div class="line">            </div><div class="line">        &#125;];</div><div class="line">        _command = command;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>viewController</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    CommandViewModel *cmdVD = [[CommandViewModel alloc] init];</div><div class="line">    [cmdVD.command.executionSignals subscribeNext:^(id x) &#123;</div><div class="line">        [x subscribeNext:^(id x) &#123;</div><div class="line">            NSLog(@&quot;网络请求的数据为:%@&quot;,x);</div><div class="line">        &#125;];</div><div class="line">    &#125;];</div><div class="line"></div><div class="line">    //高级用法</div><div class="line">    [cmdVD.command.executionSignals.switchToLatest subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;网络请求的数据为:%@&quot;,x);</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里，还可以根据发送signal的状态定义command接收的状态。</p>
+<p><code>[subscriber sendError:[[NSError alloc] init]];</code></p>
+<p>那么在接受的时候就可以使用此方法来接受错误状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[cmdVD.command.errors.switchToLatest subscribeNext:^(id x) &#123;</div><div class="line">//do error        </div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<h2 id="几个有趣的实用性方法"><a href="#几个有趣的实用性方法" class="headerlink" title="几个有趣的实用性方法"></a>几个有趣的实用性方法</h2><ol>
+<li><code>rac_signalForSelector</code> ：用作代替代理，实现某些Selector时需要执行的语句。</li>
+<li><code>rac_valuesAndChangesForKeyPath</code> ：用作代替KVO，对某个对象进行监听。</li>
+<li><code>rac_signalForControlEvents</code>：用作监听某些动作，比如按下按钮的这些动作。</li>
+<li><code>rac_addObserverForName</code>：用作监听某些通知，例如OC中的NSNotification。</li>
+<li><code>rac_textSignal</code>：用作监听文本框内容的变化。</li>
+<li><code>rac_liftSelector:withSignalsFromArray:Signals</code>：这是一个信号组，但是这些signals必须都被sendNext过。</li>
+</ol>
+<h2 id="几个重要的操作方法"><a href="#几个重要的操作方法" class="headerlink" title="几个重要的操作方法"></a>几个重要的操作方法</h2><h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><p>map的作用：把原信号的值映射成一个新的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">// 创建信号</div><div class="line">RACSubject *subject = [RACSubject subject];</div><div class="line"></div><div class="line">RACSignal *signal = [subject map:^id(id value) &#123;</div><div class="line">    // 当原信号发送数据的时候就会来调用这个block,修改原信号的内容</div><div class="line">    value  = @([value floatValue] +1.0);</div><div class="line">    // 返回值就是修改后的原信号的内容</div><div class="line">    return value;</div><div class="line">&#125;];</div><div class="line"></div><div class="line">[signal subscribeNext:^(id x) &#123;</div><div class="line">    NSLog(@&quot;%@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">[subject sendNext:@&quot;999&quot;];</div></pre></td></tr></table></figure>
+<p><em>返回</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017-01-06 14:11:15.024 testRAC[3121:139101] 1000</div></pre></td></tr></table></figure>
+<h3 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h3><p>merge：把多个信号合并为一个信号，任何一个信号有新值时就会调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">RACSignal *signalA = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        [subscriber sendNext:@&quot;signalA发送完信号&quot;];</div><div class="line">       </div><div class="line">        return  nil;</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    RACSignal *signalB = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        [subscriber sendNext:@&quot;signalB发送完信号&quot;];</div><div class="line">        </div><div class="line">        return nil;</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    // 合并信号，任何一个信号发送数据都能在订阅中监听到</div><div class="line">    RACSignal *mergesignal = [signalA merge:signalB];</div><div class="line">    </div><div class="line">    [mergesignal subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;%@&quot;,x);</div><div class="line">    &#125;];</div></pre></td></tr></table></figure>
+            <blockquote>
+                <p>
+                本文地址：
+                <a href="shaop.github.io/2017/06/11/ReactiveCocoa 学习心得/" target="_blank" rel="external">shaop.github.io/2017/06/11/ReactiveCocoa 学习心得/</a>
+                </p>
+                <footer><cite><a href="shaop.github.io">@shaop的博客</a></cite></footer>
+            </blockquote>
+            </div>
+            
+<nav class="post-nav">
+  
+    <div class="waves-block waves-effect prev fl">
+      <a href="/2017/07/24/关于 Jenkins 相关配置/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">关于 Jenkins 相关配置</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next fr">
+      <a href="/2017/03/28/唐巧《ios开发进阶》笔记/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">唐巧《ios开发进阶》笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+            
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="ReactiveCocoa 学习心得" data-title="ReactiveCocoa 学习心得" data-url="shaop.github.io/2017/06/11/ReactiveCocoa 学习心得/index.html"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"shaop"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+        </div>
+    </div>
+</article>
+    </div>
+  </main>
+<div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "ReactiveCocoa 学习心得",
+    pic: "/img/header.JPG",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "shaop.github.io/2017/06/11/ReactiveCocoa 学习心得/index.html"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<script type="text/template" id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</script>
+
+<script src="/js/search.js"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

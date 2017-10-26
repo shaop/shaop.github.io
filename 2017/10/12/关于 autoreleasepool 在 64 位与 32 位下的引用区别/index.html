@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>关于 autoreleasepool 在 64 位与 32 位下的引用区别 | shaop的博客 | better</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="">
+  <meta name="description" content="起因在阅读 雷纯峰 Objective-C Autorelease Pool 的实现原理 的时候，发现他其中的实验例子在一些设备上已经失效。而这些设备恰好是 64位 设备。检索了下脑海中64位与32位的区别，第一个想到的就是 Tagged Pointer。
+探索怀着探索的目的，准备动手试一试。首先先看下结果。
+12345678910111213141516171819202122232425262">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于 autoreleasepool 在 64 位与 32 位下的引用区别">
+<meta property="og:url" content="shaop.github.io/2017/10/12/关于 autoreleasepool 在 64 位与 32 位下的引用区别/index.html">
+<meta property="og:site_name" content="shaop的博客">
+<meta property="og:description" content="起因在阅读 雷纯峰 Objective-C Autorelease Pool 的实现原理 的时候，发现他其中的实验例子在一些设备上已经失效。而这些设备恰好是 64位 设备。检索了下脑海中64位与32位的区别，第一个想到的就是 Tagged Pointer。
+探索怀着探索的目的，准备动手试一试。首先先看下结果。
+12345678910111213141516171819202122232425262">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/work/1509000939995.png">
+<meta property="og:updated_time" content="2017-10-26T14:17:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于 autoreleasepool 在 64 位与 32 位下的引用区别">
+<meta name="twitter:description" content="起因在阅读 雷纯峰 Objective-C Autorelease Pool 的实现原理 的时候，发现他其中的实验例子在一些设备上已经失效。而这些设备恰好是 64位 设备。检索了下脑海中64位与32位的区别，第一个想到的就是 Tagged Pointer。
+探索怀着探索的目的，准备动手试一试。首先先看下结果。
+12345678910111213141516171819202122232425262">
+<meta name="twitter:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/work/1509000939995.png">
+  
+    <link rel="alternative" href="/atom.xml" title="shaop的博客" type="application/atom+xml">
+  
+  <meta name="summary" content="null">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <nav id="menu" class="hide" >
+   <div class="inner flex-row-vertical">
+  <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+      <i class="icon icon-lg icon-close"></i>
+  </a>
+  <div class="brand-wrap">
+    <div class="brand">
+      <a href="/" class="avatar"><img src="/img/header.JPG"></a>
+      <hgroup class="introduce">
+        <h5 class="nickname">shaop</h5>
+        <a href="mailto:sxp644645107@gamil.com" title="sxp644645107@gamil.com" class="mail">sxp644645107@gamil.com</a>
+      </hgroup>
+    </div>
+  </div>
+  <ul class="nav flex-col">
+    
+        <li class="waves-block waves-effect">
+          <a href="/"  >
+            <i class="icon icon-lg icon-home"></i>
+            主页
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/archives"  >
+            <i class="icon icon-lg icon-archives"></i>
+            归档
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/tags"  >
+            <i class="icon icon-lg icon-tags"></i>
+            标签
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="https://github.com/shaop" target="_blank" >
+            <i class="icon icon-lg icon-github"></i>
+            Github
+          </a>
+        </li>
+    
+  </ul>
+
+  <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>shaop的博客 &copy; 2017</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+</div>
+
+  </nav>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">关于 autoreleasepool 在 64 位与 32 位下的引用区别</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input " autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header">
+  <div class="container">
+    <h1 class="author">关于 autoreleasepool 在 64 位与 32 位下的引用区别</h1>
+    <h5 class="subtitle">
+        
+            <time datetime="2017-10-11T16:34:14.000Z" itemprop="datePublished" class="page-time">
+  2017-10-12
+</time>
+
+
+        
+    </h5>
+  </div>
+</header>
+
+    <div class="container body-wrap">
+      <article id="post-关于 autoreleasepool 在 64 位与 32 位下的引用区别" 
+  class="article article-type-post" itemprop="blogPost">
+    <div class="post-meta flex-row">
+        
+    </div>
+    <div class="post-body">
+        <aside class="post-widget" id="post-widget">
+
+            
+            <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+            
+
+            
+            <nav class="post-toc-wrap" id="post-toc">
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#起因"><span class="post-toc-text">起因</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#探索"><span class="post-toc-text">探索</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Tagged-Pointer"><span class="post-toc-text">Tagged Pointer</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Tagged-Pointer-对应关系"><span class="post-toc-text">Tagged Pointer 对应关系</span></a></li></ol></li></ol>
+            </nav>
+            
+        </aside>
+
+        <div class="post-main">
+
+            <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>在阅读 <a href="http://blog.leichunfeng.com/blog/2015/05/31/objective-c-autorelease-pool-implementation-principle/" target="_blank" rel="external">雷纯峰 Objective-C Autorelease Pool 的实现原理</a> 的时候，发现他其中的实验例子在一些设备上已经失效。而这些设备恰好是 <strong>64位</strong> 设备。检索了下脑海中64位与32位的区别，第一个想到的就是 <code>Tagged Pointer</code>。</p>
+<h2 id="探索"><a href="#探索" class="headerlink" title="探索"></a>探索</h2><p>怀着探索的目的，准备动手试一试。首先先看下结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">__weak NSString *string_weak_ = nil;</div><div class="line"></div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line"></div><div class="line">    // 场景 1</div><div class="line">    NSString *string = [NSString stringWithFormat:@&quot;leichunfeng&quot;];</div><div class="line">    string_weak_ = string;</div><div class="line"></div><div class="line">    // 场景 2</div><div class="line">//    @autoreleasepool &#123;</div><div class="line">//        NSString *string = [NSString stringWithFormat:@&quot;leichunfeng&quot;];</div><div class="line">//        string_weak_ = string;</div><div class="line">//    &#125;</div><div class="line"></div><div class="line">    // 场景 3</div><div class="line">//    NSString *string = nil;</div><div class="line">//    @autoreleasepool &#123;</div><div class="line">//        string = [NSString stringWithFormat:@&quot;leichunfeng&quot;];</div><div class="line">//        string_weak_ = string;</div><div class="line">//    &#125;</div><div class="line"></div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)viewWillAppear:(BOOL)animated &#123;</div><div class="line">    [super viewWillAppear:animated];</div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)viewDidAppear:(BOOL)animated &#123;</div><div class="line">    [super viewDidAppear:animated];</div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>64位下输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 场景 1</div><div class="line">2017-8-26 13:38:38.291705+0800 testPro[4036:799277] string: leichunfeng</div><div class="line">2017-8-26 13:38:38.291932+0800 testPro[4036:799277] string: leichunfeng</div><div class="line">2017-8-26 13:38:38.295360+0800 testPro[4036:799277] string: leichunfeng</div><div class="line"></div><div class="line">// 场景 2</div><div class="line">2017-8-26 13:44:11.657844+0800 testPro[4112:817709] string: leichunfeng</div><div class="line">2017-8-26 13:44:11.658055+0800 testPro[4112:817709] string: leichunfeng</div><div class="line">2017-8-26 13:44:11.661383+0800 testPro[4112:817709] string: leichunfeng</div><div class="line"></div><div class="line">// 场景 3</div><div class="line">2017-8-26 13:45:13.864718+0800 testPro[4139:821594] string: leichunfeng</div><div class="line">2017-8-26 13:45:13.864943+0800 testPro[4139:821594] string: leichunfeng</div><div class="line">2017-8-26 13:45:13.868293+0800 testPro[4139:821594] string: leichunfeng</div></pre></td></tr></table></figure>
+<p>32位下输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 场景 1</div><div class="line">2015-05-30 10:32:20.837 AutoreleasePool[33876:1448343] string: leichunfeng</div><div class="line">2015-05-30 10:32:20.838 AutoreleasePool[33876:1448343] string: leichunfeng</div><div class="line">2015-05-30 10:32:20.845 AutoreleasePool[33876:1448343] string: (null)</div><div class="line"></div><div class="line">// 场景 2</div><div class="line">2015-05-30 10:32:50.548 AutoreleasePool[33915:1448912] string: (null)</div><div class="line">2015-05-30 10:32:50.549 AutoreleasePool[33915:1448912] string: (null)</div><div class="line">2015-05-30 10:32:50.555 AutoreleasePool[33915:1448912] string: (null)</div><div class="line"></div><div class="line">// 场景 3</div><div class="line">2015-05-30 10:33:07.075 AutoreleasePool[33984:1449418] string: leichunfeng</div><div class="line">2015-05-30 10:33:07.075 AutoreleasePool[33984:1449418] string: (null)</div><div class="line">2015-05-30 10:33:07.094 AutoreleasePool[33984:1449418] string: (null)</div></pre></td></tr></table></figure>
+<p>在64位下。毫无例外的都输出了结果。第一次看到的时候，完全觉得不可思议，突然想到这个其实和 <code>NSString</code> 直接输入字符串得到的结果是相同的。</p>
+<blockquote>
+<p>这里牵扯到 <code>NSString *str = @&quot;leichunfeng&quot;</code> 不会被释放，是因为这样的话 str 是被当一个 Strinig 类型的常量 <code>NSCFConstantString</code> 来对待的。</p>
+</blockquote>
+<p>但是这里都是使用工厂方法创建的类型。所以都是应该是一个实实在在的对象。结合 <code>Tagged Pointer</code> 我们知道，在64位下，对象的指针是会进行优化的。在 64位 代码中断点我们也可以看到这个对象确确实实是一个 <code>NSTaggedPointerString</code> 对象。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1509000939995.png" width="179"></p>
+<p>所以假设成立。这是由于 <code>Tagged Pointer</code> 引起的无法释放。那光了解到这里，显然是不够的。继续深入了解下 <code>Tagged Pointer</code>。</p>
+<h2 id="Tagged-Pointer"><a href="#Tagged-Pointer" class="headerlink" title="Tagged Pointer"></a>Tagged Pointer</h2><blockquote>
+<p>为了优化内存，Apple 在64位设备中，引入了 <code>Tagged Pointer</code> 来优化 isa 指针。（64位的指针来记录地址太浪费啦～）。其中有一部分就默认了一些值<code>NSDate</code>,<code>NSNumber</code>,<code>NSString</code>…</p>
+</blockquote>
+<p>照这么说，如果一个值的类型很大，那必然无法使用 <code>Tagged Pointer</code> 来进行优化，我对原来的代码进行一些修改。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">__weak NSString *string_weak_ = nil;</div><div class="line"></div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    </div><div class="line">    // 场景 1</div><div class="line">    NSString *string = [NSString stringWithFormat:@&quot;12345678900&quot;];</div><div class="line">    string_weak_ = string;</div><div class="line">    </div><div class="line">    // 场景 2</div><div class="line">//        @autoreleasepool &#123;</div><div class="line">//            NSString *string = [NSString stringWithFormat:@&quot;12345678900&quot;];</div><div class="line">//            string_weak_ = string;</div><div class="line">//        &#125;</div><div class="line">    </div><div class="line">    // 场景 3</div><div class="line">//        NSString *string = nil;</div><div class="line">//        @autoreleasepool &#123;</div><div class="line">//            string = [NSString stringWithFormat:@&quot;12345678900&quot;];</div><div class="line">//            string_weak_ = string;</div><div class="line">//        &#125;</div><div class="line">    </div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)viewWillAppear:(BOOL)animated &#123;</div><div class="line">    [super viewWillAppear:animated];</div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)viewDidAppear:(BOOL)animated &#123;</div><div class="line">    [super viewDidAppear:animated];</div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)didReceiveMemoryWarning &#123;</div><div class="line">    [super didReceiveMemoryWarning];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>64位下输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 场景 1</div><div class="line">2017-8-26 15:43:23.232464+0800 testPro[5432:1104611] string: 12345678900</div><div class="line">2017-8-26 15:43:23.232667+0800 testPro[5432:1104611] string: 12345678900</div><div class="line">2017-8-26 15:43:23.237981+0800 testPro[5432:1104611] string: (null)</div><div class="line"></div><div class="line">// 场景 2</div><div class="line">2017-10-26 15:44:08.761063+0800 testPro[5460:1109356] string: (null)</div><div class="line">2017-10-26 15:44:08.761292+0800 testPro[5460:1109356] string: (null)</div><div class="line">2017-10-26 15:44:08.766554+0800 testPro[5460:1109356] string: (null)</div><div class="line"></div><div class="line">// 场景 3</div><div class="line">2017-10-26 15:44:57.918361+0800 testPro[5485:1114091] string: 12345678900</div><div class="line">2017-10-26 15:44:57.918576+0800 testPro[5485:1114091] string: (null)</div><div class="line">2017-10-26 15:44:57.923708+0800 testPro[5485:1114091] string: (null)</div></pre></td></tr></table></figure>
+<p>这一下，完全可以放心了。输出的结果和 32位 下的完全一致。这就表明了。在 <code>Tagged Pointer</code> 下，指针默认储存着一些值。</p>
+<h3 id="Tagged-Pointer-对应关系"><a href="#Tagged-Pointer-对应关系" class="headerlink" title="Tagged Pointer 对应关系"></a>Tagged Pointer 对应关系</h3><p>简单记录下 Tagged Pointer 中 <code>isa</code> 的指针存放。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">union isa_t </div><div class="line">&#123; </div><div class="line">    isa_t() &#123; &#125;</div><div class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</div><div class="line"></div><div class="line">    Class cls;</div><div class="line">    uintptr_t bits;</div><div class="line"></div><div class="line">#if SUPPORT_NONPOINTER_ISA</div><div class="line"># if __arm64__</div><div class="line">#   define ISA_MASK        0x00000001fffffff8ULL</div><div class="line">#   define ISA_MAGIC_MASK  0x000003fe00000001ULL</div><div class="line">#   define ISA_MAGIC_VALUE 0x000001a400000001ULL</div><div class="line">    struct &#123;</div><div class="line">        uintptr_t indexed           : 1;</div><div class="line">        uintptr_t has_assoc         : 1;</div><div class="line">        uintptr_t has_cxx_dtor      : 1;</div><div class="line">        uintptr_t shiftcls          : 30; // MACH_VM_MAX_ADDRESS 0x1a0000000</div><div class="line">        uintptr_t magic             : 9;</div><div class="line">        uintptr_t weakly_referenced : 1;</div><div class="line">        uintptr_t deallocating      : 1;</div><div class="line">        uintptr_t has_sidetable_rc  : 1;</div><div class="line">        uintptr_t extra_rc          : 19;</div><div class="line">#       define RC_ONE   (1ULL&lt;&lt;45)</div><div class="line">#       define RC_HALF  (1ULL&lt;&lt;18)</div><div class="line">    &#125;;</div><div class="line"></div><div class="line"># elif __x86_64__</div><div class="line">#   define ISA_MASK        0x00007ffffffffff8ULL</div><div class="line">#   define ISA_MAGIC_MASK  0x0000000000000001ULL</div><div class="line">#   define ISA_MAGIC_VALUE 0x0000000000000001ULL</div><div class="line">    struct &#123;</div><div class="line">        uintptr_t indexed           : 1;</div><div class="line">        uintptr_t has_assoc         : 1;</div><div class="line">        uintptr_t has_cxx_dtor      : 1;</div><div class="line">        uintptr_t shiftcls          : 44; // MACH_VM_MAX_ADDRESS 0x7fffffe00000</div><div class="line">        uintptr_t weakly_referenced : 1;</div><div class="line">        uintptr_t deallocating      : 1;</div><div class="line">        uintptr_t has_sidetable_rc  : 1;</div><div class="line">        uintptr_t extra_rc          : 14;</div><div class="line">#       define RC_ONE   (1ULL&lt;&lt;50)</div><div class="line">#       define RC_HALF  (1ULL&lt;&lt;13)</div><div class="line">    &#125;;</div><div class="line"></div><div class="line"># else</div><div class="line">    // Available bits in isa field are architecture-specific.</div><div class="line">#   error unknown architecture</div><div class="line"># endif</div><div class="line"></div><div class="line">// SUPPORT_NONPOINTER_ISA</div><div class="line">#endif</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><code>isa</code> 对应的含义</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Tables</th>
+<th style="text-align:left">Are</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">indexed</td>
+<td style="text-align:left">0 表示普通的 isa 指针，1 表示使用优化，存储引用计数</td>
+</tr>
+<tr>
+<td style="text-align:left">has_assoc</td>
+<td style="text-align:left">表示该对象是否包含 associated object，如果没有，则析构时会更快</td>
+</tr>
+<tr>
+<td style="text-align:left">has_cxx_dtor</td>
+<td style="text-align:left">表示该对象是否有 C++ 或 ARC 的析构函数，如果没有，则析构时更快</td>
+</tr>
+<tr>
+<td style="text-align:left">shiftcls</td>
+<td style="text-align:left">类的指针</td>
+</tr>
+<tr>
+<td style="text-align:left">magic</td>
+<td style="text-align:left">固定值为 0xd2，用于在调试时分辨对象是否未完成初始化。</td>
+</tr>
+<tr>
+<td style="text-align:left">weakly_referenced</td>
+<td style="text-align:left">表示该对象是否有过 weak 对象，如果没有，则析构时更快</td>
+</tr>
+<tr>
+<td style="text-align:left">has<em> sidetable</em> rc</td>
+<td style="text-align:left">表示该对象的引用计数值是否过大无法存储在 isa 指针</td>
+</tr>
+<tr>
+<td style="text-align:left">extra_rc</td>
+<td style="text-align:left">存储引用计数值减一后的结果</td>
+</tr>
+</tbody>
+</table>
+<p>该部分引用自 <a href="http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/" target="_blank" rel="external">Objective-C 引用计数原理</a>  </p>
+
+            <blockquote>
+                <p>
+                本文地址：
+                <a href="shaop.github.io/2017/10/12/关于 autoreleasepool 在 64 位与 32 位下的引用区别/" target="_blank" rel="external">shaop.github.io/2017/10/12/关于 autoreleasepool 在 64 位与 32 位下的引用区别/</a>
+                </p>
+                <footer><cite><a href="shaop.github.io">@shaop的博客</a></cite></footer>
+            </blockquote>
+            </div>
+            
+<nav class="post-nav">
+  
+    <div class="waves-block waves-effect prev fl">
+      <a href="/2017/10/19/组件化之路探索：CocoaPods 私有 pods 搭建/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">组件化之路探索：CocoaPods 私有 pods 搭建</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next fr">
+      <a href="/2017/09/12/关于 iOS 生产模式下的错误捕捉（swift 版本）/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">关于 iOS 生产模式下的错误捕捉（swift 版本）</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+            
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="关于 autoreleasepool 在 64 位与 32 位下的引用区别" data-title="关于 autoreleasepool 在 64 位与 32 位下的引用区别" data-url="shaop.github.io/2017/10/12/关于 autoreleasepool 在 64 位与 32 位下的引用区别/index.html"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"shaop"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+        </div>
+    </div>
+</article>
+    </div>
+  </main>
+<div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "关于 autoreleasepool 在 64 位与 32 位下的引用区别",
+    pic: "/img/header.JPG",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "shaop.github.io/2017/10/12/关于 autoreleasepool 在 64 位与 32 位下的引用区别/index.html"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<script type="text/template" id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</script>
+
+<script src="/js/search.js"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

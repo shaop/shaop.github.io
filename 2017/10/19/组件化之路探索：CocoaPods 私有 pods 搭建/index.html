@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>组件化之路探索：CocoaPods 私有 pods 搭建 | shaop的博客 | better</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="">
+  <meta name="description" content="看了 n 多的组件化的方案之后，基本所有的方案都指向是有 CocoaPods 进行组件化构建。因此，本篇记录使用 CocoaPods 搭建私有 pods 的过程。
+概览搭建私有 pod 步骤一般分为以下：
+
+搭建私有的 PodSpesc 仓库
+创建私有的组件库
+配置私有的组件库
+上传版本与版本管理
+加入到私有 PodSpesc 仓库
+
+搭建私有的 PodSpesc 仓库在搭建仓库之前，我们需要在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="组件化之路探索：CocoaPods 私有 pods 搭建">
+<meta property="og:url" content="shaop.github.io/2017/10/19/组件化之路探索：CocoaPods 私有 pods 搭建/index.html">
+<meta property="og:site_name" content="shaop的博客">
+<meta property="og:description" content="看了 n 多的组件化的方案之后，基本所有的方案都指向是有 CocoaPods 进行组件化构建。因此，本篇记录使用 CocoaPods 搭建私有 pods 的过程。
+概览搭建私有 pod 步骤一般分为以下：
+
+搭建私有的 PodSpesc 仓库
+创建私有的组件库
+配置私有的组件库
+上传版本与版本管理
+加入到私有 PodSpesc 仓库
+
+搭建私有的 PodSpesc 仓库在搭建仓库之前，我们需要在">
+<meta property="og:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1509026311831.png">
+<meta property="og:updated_time" content="2017-10-26T14:17:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="组件化之路探索：CocoaPods 私有 pods 搭建">
+<meta name="twitter:description" content="看了 n 多的组件化的方案之后，基本所有的方案都指向是有 CocoaPods 进行组件化构建。因此，本篇记录使用 CocoaPods 搭建私有 pods 的过程。
+概览搭建私有 pod 步骤一般分为以下：
+
+搭建私有的 PodSpesc 仓库
+创建私有的组件库
+配置私有的组件库
+上传版本与版本管理
+加入到私有 PodSpesc 仓库
+
+搭建私有的 PodSpesc 仓库在搭建仓库之前，我们需要在">
+<meta name="twitter:image" content="http://7xkl1p.com1.z0.glb.clouddn.com/img/1509026311831.png">
+  
+    <link rel="alternative" href="/atom.xml" title="shaop的博客" type="application/atom+xml">
+  
+  <meta name="summary" content="null">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <nav id="menu" class="hide" >
+   <div class="inner flex-row-vertical">
+  <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+      <i class="icon icon-lg icon-close"></i>
+  </a>
+  <div class="brand-wrap">
+    <div class="brand">
+      <a href="/" class="avatar"><img src="/img/header.JPG"></a>
+      <hgroup class="introduce">
+        <h5 class="nickname">shaop</h5>
+        <a href="mailto:sxp644645107@gamil.com" title="sxp644645107@gamil.com" class="mail">sxp644645107@gamil.com</a>
+      </hgroup>
+    </div>
+  </div>
+  <ul class="nav flex-col">
+    
+        <li class="waves-block waves-effect">
+          <a href="/"  >
+            <i class="icon icon-lg icon-home"></i>
+            主页
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/archives"  >
+            <i class="icon icon-lg icon-archives"></i>
+            归档
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="/tags"  >
+            <i class="icon icon-lg icon-tags"></i>
+            标签
+          </a>
+        </li>
+    
+        <li class="waves-block waves-effect">
+          <a href="https://github.com/shaop" target="_blank" >
+            <i class="icon icon-lg icon-github"></i>
+            Github
+          </a>
+        </li>
+    
+  </ul>
+
+  <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>shaop的博客 &copy; 2017</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+</div>
+
+  </nav>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">组件化之路探索：CocoaPods 私有 pods 搭建</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input " autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header">
+  <div class="container">
+    <h1 class="author">组件化之路探索：CocoaPods 私有 pods 搭建</h1>
+    <h5 class="subtitle">
+        
+            <time datetime="2017-10-19T14:45:21.000Z" itemprop="datePublished" class="page-time">
+  2017-10-19
+</time>
+
+
+        
+    </h5>
+  </div>
+</header>
+
+    <div class="container body-wrap">
+      <article id="post-组件化之路探索：CocoaPods 私有 pods 搭建" 
+  class="article article-type-post" itemprop="blogPost">
+    <div class="post-meta flex-row">
+        
+    </div>
+    <div class="post-body">
+        <aside class="post-widget" id="post-widget">
+
+            
+            <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+            
+
+            
+            <nav class="post-toc-wrap" id="post-toc">
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概览"><span class="post-toc-text">概览</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#搭建私有的-PodSpesc-仓库"><span class="post-toc-text">搭建私有的 PodSpesc 仓库</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#创建私有的组件库"><span class="post-toc-text">创建私有的组件库</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置私有的组件库"><span class="post-toc-text">配置私有的组件库</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#上传版本与版本管理"><span class="post-toc-text">上传版本与版本管理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#加入到私有-PodSpesc-仓库"><span class="post-toc-text">加入到私有 PodSpesc 仓库</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试可用"><span class="post-toc-text">测试可用</span></a></li></ol>
+            </nav>
+            
+        </aside>
+
+        <div class="post-main">
+
+            <div class="post-content" id="post-content" itemprop="postContent">
+            <p>看了 n 多的组件化的方案之后，基本所有的方案都指向是有 CocoaPods 进行组件化构建。因此，本篇记录使用 CocoaPods 搭建私有 pods 的过程。</p>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>搭建私有 pod 步骤一般分为以下：</p>
+<ol>
+<li>搭建私有的 PodSpesc 仓库</li>
+<li>创建私有的组件库</li>
+<li>配置私有的组件库</li>
+<li>上传版本与版本管理</li>
+<li>加入到私有 PodSpesc 仓库</li>
+</ol>
+<h2 id="搭建私有的-PodSpesc-仓库"><a href="#搭建私有的-PodSpesc-仓库" class="headerlink" title="搭建私有的 PodSpesc 仓库"></a>搭建私有的 PodSpesc 仓库</h2><p>在搭建仓库之前，我们需要在 git 上创建一个仓库。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1509026311831.png" width="404"></p>
+<blockquote>
+<p>注意授权许可选择 <code>MIT Licenese</code> </p>
+</blockquote>
+<p>创建完成之后之后输入以下命令进行 PodSpesc 仓库的创建</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod repo add [REPO_NAME(仓库名字)] [SOURCE_URL(git的地址)]</div></pre></td></tr></table></figure>
+<p>创建完成之后，在本地的 <code>/Users/username/.cocoapods/repos/</code> 目录下就会出现刚刚创建的 PodSpesc 仓库。</p>
+<h2 id="创建私有的组件库"><a href="#创建私有的组件库" class="headerlink" title="创建私有的组件库"></a>创建私有的组件库</h2><p>在创建完私有的 PodSpesc 仓库之后，就要开始创建我们私有的组件库了。</p>
+<blockquote>
+<p>这里同样需要在 git 上创建仓库，不再重复。默认在git目录下操作。</p>
+</blockquote>
+<p>创建组件库的方式有很多，这里推荐 CocoaPods 自带的创建方式，使用如下命令</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod lib create XXXKit</div></pre></td></tr></table></figure>
+<p>后续有一系列选择，试实际需求确定。</p>
+<p>创建完成之后，一般情况下的目录结构如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">XXXKit</div><div class="line">  ├── .travis.yml</div><div class="line">  ├── _Pods.xcproject</div><div class="line">  ├── Example</div><div class="line">  │   ├── XXXKit</div><div class="line">  │   ├── XXXKit.xcodeproj</div><div class="line">  │   ├── XXXKit.xcworkspace</div><div class="line">  │   ├── Podfile</div><div class="line">  │   ├── Podfile.lock</div><div class="line">  │   ├── Pods</div><div class="line">  │   └── Tests</div><div class="line">  ├── LICENSE</div><div class="line">  ├── XXXKit.podspec</div><div class="line">  ├── Pod</div><div class="line">  │   ├── Assets</div><div class="line">  │   └── Classes</div><div class="line">  │     └── RemoveMe.[swift/m]</div><div class="line">  └── README.md</div></pre></td></tr></table></figure>
+<p>至此，已经完成私有组件的创建</p>
+<h2 id="配置私有的组件库"><a href="#配置私有的组件库" class="headerlink" title="配置私有的组件库"></a>配置私有的组件库</h2><p>组件库的配置主要是配置 <code>.podspec</code> 文件，使用 CocoaPods 创建的内容一般都包括了主要需要的配置项。在此列举。</p>
+<ul>
+<li><strong>name</strong> ：库的名字</li>
+<li><strong>version</strong>：当前库的版本，需要对应 git 的 tag 号</li>
+<li><strong>summary</strong>：简介</li>
+<li><strong>description</strong>：描述，需要在<code>&lt;&lt;-DESC</code> 和 <code>DESC</code>中间填入描述</li>
+<li><strong>homepage</strong>：项目的官方首页</li>
+<li>screenshots：预览图</li>
+<li><strong>license</strong>：许可描述</li>
+<li><strong>author</strong>：作者描述</li>
+<li><strong>source</strong>：源码地址，即 git 地址</li>
+<li>social_media_url： 作者的媒体方式，例如微博，twitter</li>
+<li><strong>deployment_target</strong>：iOS 的支持版本</li>
+<li><strong>source_files</strong>：pod 中的源码通配符地址</li>
+<li>resource_bundles：资源通配符地址</li>
+<li>public_header_files：头文件的通配符地址，用在闭源环境下</li>
+<li>frameworks：使用的frameworks，例如 <code>UIKit</code></li>
+<li>dependency：项目的依赖，可以加入类似 <code>AFNetworking</code> 等依赖，在别的工程 <code>pod install</code> 时会自动加入这些依赖</li>
+</ul>
+<p>粗体的配置完成之后在该工程目录下输入以下命令来进行库的验证</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod lib lint</div></pre></td></tr></table></figure>
+<h2 id="上传版本与版本管理"><a href="#上传版本与版本管理" class="headerlink" title="上传版本与版本管理"></a>上传版本与版本管理</h2><p>私有库的版本在 git 中使用 tag 来进行管理的</p>
+<p>这里的逻辑是在源码版本 push 后，再打入 tag 。命令如下</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git push origin master //这里的 push 是提交版本源码</div><div class="line">$ git tag '1.0.0' //这里的 tag 必须和上面提交的源码中的 .podspec 文件中的 version 相同</div><div class="line">$ git push --tags</div><div class="line">$ git push origin master</div></pre></td></tr></table></figure>
+<h2 id="加入到私有-PodSpesc-仓库"><a href="#加入到私有-PodSpesc-仓库" class="headerlink" title="加入到私有 PodSpesc 仓库"></a>加入到私有 PodSpesc 仓库</h2><p>确定无误之后，即可加入先前建立的 PodSpesc 仓库了，在组件库中输入以下命令</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod repo push [PodSpescName(仓库的名字)] [XXXKix.podspec(目录下的 .podspec)]</div></pre></td></tr></table></figure>
+<h2 id="测试可用"><a href="#测试可用" class="headerlink" title="测试可用"></a>测试可用</h2><p>建立项目，创建 Podfile 和平时不同的是，需要在文件的最开头输入以下的 code</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">source &apos;http://xxxx.xxx/XXXX/XXXPodSpesc.git&apos;</div><div class="line">source &apos;https://github.com/CocoaPods/Specs.git&apos;</div></pre></td></tr></table></figure>
+<p>指明需要的库，否则 CocoaPod 无法找需要需要的库</p>
+
+            <blockquote>
+                <p>
+                本文地址：
+                <a href="shaop.github.io/2017/10/19/组件化之路探索：CocoaPods 私有 pods 搭建/" target="_blank" rel="external">shaop.github.io/2017/10/19/组件化之路探索：CocoaPods 私有 pods 搭建/</a>
+                </p>
+                <footer><cite><a href="shaop.github.io">@shaop的博客</a></cite></footer>
+            </blockquote>
+            </div>
+            
+<nav class="post-nav">
+  
+
+  
+    <div class="waves-block waves-effect next fr">
+      <a href="/2017/10/12/关于 autoreleasepool 在 64 位与 32 位下的引用区别/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">关于 autoreleasepool 在 64 位与 32 位下的引用区别</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+            
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="组件化之路探索：CocoaPods 私有 pods 搭建" data-title="组件化之路探索：CocoaPods 私有 pods 搭建" data-url="shaop.github.io/2017/10/19/组件化之路探索：CocoaPods 私有 pods 搭建/index.html"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"shaop"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+        </div>
+    </div>
+</article>
+    </div>
+  </main>
+<div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "组件化之路探索：CocoaPods 私有 pods 搭建",
+    pic: "/img/header.JPG",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "shaop.github.io/2017/10/19/组件化之路探索：CocoaPods 私有 pods 搭建/index.html"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<script type="text/template" id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</script>
+
+<script src="/js/search.js"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

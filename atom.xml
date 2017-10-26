@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="shaop.github.io/"/>
-  <updated>2017-03-28T12:40:52.000Z</updated>
+  <updated>2017-10-26T14:17:29.000Z</updated>
   <id>shaop.github.io/</id>
   
   <author>
@@ -14,6 +14,335 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>组件化之路探索：CocoaPods 私有 pods 搭建</title>
+    <link href="shaop.github.io/2017/10/19/%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B9%8B%E8%B7%AF%E6%8E%A2%E7%B4%A2%EF%BC%9ACocoaPods%20%E7%A7%81%E6%9C%89%20pods%20%E6%90%AD%E5%BB%BA/"/>
+    <id>shaop.github.io/2017/10/19/组件化之路探索：CocoaPods 私有 pods 搭建/</id>
+    <published>2017-10-19T14:45:21.000Z</published>
+    <updated>2017-10-26T14:17:29.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>看了 n 多的组件化的方案之后，基本所有的方案都指向是有 CocoaPods 进行组件化构建。因此，本篇记录使用 CocoaPods 搭建私有 pods 的过程。</p>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>搭建私有 pod 步骤一般分为以下：</p>
+<ol>
+<li>搭建私有的 PodSpesc 仓库</li>
+<li>创建私有的组件库</li>
+<li>配置私有的组件库</li>
+<li>上传版本与版本管理</li>
+<li>加入到私有 PodSpesc 仓库</li>
+</ol>
+<h2 id="搭建私有的-PodSpesc-仓库"><a href="#搭建私有的-PodSpesc-仓库" class="headerlink" title="搭建私有的 PodSpesc 仓库"></a>搭建私有的 PodSpesc 仓库</h2><p>在搭建仓库之前，我们需要在 git 上创建一个仓库。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1509026311831.png" width="404"></p>
+<blockquote>
+<p>注意授权许可选择 <code>MIT Licenese</code> </p>
+</blockquote>
+<p>创建完成之后之后输入以下命令进行 PodSpesc 仓库的创建</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod repo add [REPO_NAME(仓库名字)] [SOURCE_URL(git的地址)]</div></pre></td></tr></table></figure>
+<p>创建完成之后，在本地的 <code>/Users/username/.cocoapods/repos/</code> 目录下就会出现刚刚创建的 PodSpesc 仓库。</p>
+<h2 id="创建私有的组件库"><a href="#创建私有的组件库" class="headerlink" title="创建私有的组件库"></a>创建私有的组件库</h2><p>在创建完私有的 PodSpesc 仓库之后，就要开始创建我们私有的组件库了。</p>
+<blockquote>
+<p>这里同样需要在 git 上创建仓库，不再重复。默认在git目录下操作。</p>
+</blockquote>
+<p>创建组件库的方式有很多，这里推荐 CocoaPods 自带的创建方式，使用如下命令</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod lib create XXXKit</div></pre></td></tr></table></figure>
+<p>后续有一系列选择，试实际需求确定。</p>
+<p>创建完成之后，一般情况下的目录结构如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">XXXKit</div><div class="line">  ├── .travis.yml</div><div class="line">  ├── _Pods.xcproject</div><div class="line">  ├── Example</div><div class="line">  │   ├── XXXKit</div><div class="line">  │   ├── XXXKit.xcodeproj</div><div class="line">  │   ├── XXXKit.xcworkspace</div><div class="line">  │   ├── Podfile</div><div class="line">  │   ├── Podfile.lock</div><div class="line">  │   ├── Pods</div><div class="line">  │   └── Tests</div><div class="line">  ├── LICENSE</div><div class="line">  ├── XXXKit.podspec</div><div class="line">  ├── Pod</div><div class="line">  │   ├── Assets</div><div class="line">  │   └── Classes</div><div class="line">  │     └── RemoveMe.[swift/m]</div><div class="line">  └── README.md</div></pre></td></tr></table></figure>
+<p>至此，已经完成私有组件的创建</p>
+<h2 id="配置私有的组件库"><a href="#配置私有的组件库" class="headerlink" title="配置私有的组件库"></a>配置私有的组件库</h2><p>组件库的配置主要是配置 <code>.podspec</code> 文件，使用 CocoaPods 创建的内容一般都包括了主要需要的配置项。在此列举。</p>
+<ul>
+<li><strong>name</strong> ：库的名字</li>
+<li><strong>version</strong>：当前库的版本，需要对应 git 的 tag 号</li>
+<li><strong>summary</strong>：简介</li>
+<li><strong>description</strong>：描述，需要在<code>&lt;&lt;-DESC</code> 和 <code>DESC</code>中间填入描述</li>
+<li><strong>homepage</strong>：项目的官方首页</li>
+<li>screenshots：预览图</li>
+<li><strong>license</strong>：许可描述</li>
+<li><strong>author</strong>：作者描述</li>
+<li><strong>source</strong>：源码地址，即 git 地址</li>
+<li>social_media_url： 作者的媒体方式，例如微博，twitter</li>
+<li><strong>deployment_target</strong>：iOS 的支持版本</li>
+<li><strong>source_files</strong>：pod 中的源码通配符地址</li>
+<li>resource_bundles：资源通配符地址</li>
+<li>public_header_files：头文件的通配符地址，用在闭源环境下</li>
+<li>frameworks：使用的frameworks，例如 <code>UIKit</code></li>
+<li>dependency：项目的依赖，可以加入类似 <code>AFNetworking</code> 等依赖，在别的工程 <code>pod install</code> 时会自动加入这些依赖</li>
+</ul>
+<p>粗体的配置完成之后在该工程目录下输入以下命令来进行库的验证</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod lib lint</div></pre></td></tr></table></figure>
+<h2 id="上传版本与版本管理"><a href="#上传版本与版本管理" class="headerlink" title="上传版本与版本管理"></a>上传版本与版本管理</h2><p>私有库的版本在 git 中使用 tag 来进行管理的</p>
+<p>这里的逻辑是在源码版本 push 后，再打入 tag 。命令如下</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git push origin master //这里的 push 是提交版本源码</div><div class="line">$ git tag '1.0.0' //这里的 tag 必须和上面提交的源码中的 .podspec 文件中的 version 相同</div><div class="line">$ git push --tags</div><div class="line">$ git push origin master</div></pre></td></tr></table></figure>
+<h2 id="加入到私有-PodSpesc-仓库"><a href="#加入到私有-PodSpesc-仓库" class="headerlink" title="加入到私有 PodSpesc 仓库"></a>加入到私有 PodSpesc 仓库</h2><p>确定无误之后，即可加入先前建立的 PodSpesc 仓库了，在组件库中输入以下命令</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pod repo push [PodSpescName(仓库的名字)] [XXXKix.podspec(目录下的 .podspec)]</div></pre></td></tr></table></figure>
+<h2 id="测试可用"><a href="#测试可用" class="headerlink" title="测试可用"></a>测试可用</h2><p>建立项目，创建 Podfile 和平时不同的是，需要在文件的最开头输入以下的 code</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">source &apos;http://xxxx.xxx/XXXX/XXXPodSpesc.git&apos;</div><div class="line">source &apos;https://github.com/CocoaPods/Specs.git&apos;</div></pre></td></tr></table></figure>
+<p>指明需要的库，否则 CocoaPod 无法找需要需要的库</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;看了 n 多的组件化的方案之后，基本所有的方案都指向是有 CocoaPods 进行组件化构建。因此，本篇记录使用 CocoaPods 搭建私有 pods 的过程。&lt;/p&gt;
+&lt;h2 id=&quot;概览&quot;&gt;&lt;a href=&quot;#概览&quot; class=&quot;headerlink&quot; title=
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>关于 autoreleasepool 在 64 位与 32 位下的引用区别</title>
+    <link href="shaop.github.io/2017/10/12/%E5%85%B3%E4%BA%8E%20autoreleasepool%20%E5%9C%A8%2064%20%E4%BD%8D%E4%B8%8E%2032%20%E4%BD%8D%E4%B8%8B%E7%9A%84%E5%BC%95%E7%94%A8%E5%8C%BA%E5%88%AB/"/>
+    <id>shaop.github.io/2017/10/12/关于 autoreleasepool 在 64 位与 32 位下的引用区别/</id>
+    <published>2017-10-11T16:34:14.000Z</published>
+    <updated>2017-10-26T14:17:50.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>在阅读 <a href="http://blog.leichunfeng.com/blog/2015/05/31/objective-c-autorelease-pool-implementation-principle/" target="_blank" rel="external">雷纯峰 Objective-C Autorelease Pool 的实现原理</a> 的时候，发现他其中的实验例子在一些设备上已经失效。而这些设备恰好是 <strong>64位</strong> 设备。检索了下脑海中64位与32位的区别，第一个想到的就是 <code>Tagged Pointer</code>。</p>
+<h2 id="探索"><a href="#探索" class="headerlink" title="探索"></a>探索</h2><p>怀着探索的目的，准备动手试一试。首先先看下结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">__weak NSString *string_weak_ = nil;</div><div class="line"></div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line"></div><div class="line">    // 场景 1</div><div class="line">    NSString *string = [NSString stringWithFormat:@&quot;leichunfeng&quot;];</div><div class="line">    string_weak_ = string;</div><div class="line"></div><div class="line">    // 场景 2</div><div class="line">//    @autoreleasepool &#123;</div><div class="line">//        NSString *string = [NSString stringWithFormat:@&quot;leichunfeng&quot;];</div><div class="line">//        string_weak_ = string;</div><div class="line">//    &#125;</div><div class="line"></div><div class="line">    // 场景 3</div><div class="line">//    NSString *string = nil;</div><div class="line">//    @autoreleasepool &#123;</div><div class="line">//        string = [NSString stringWithFormat:@&quot;leichunfeng&quot;];</div><div class="line">//        string_weak_ = string;</div><div class="line">//    &#125;</div><div class="line"></div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)viewWillAppear:(BOOL)animated &#123;</div><div class="line">    [super viewWillAppear:animated];</div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)viewDidAppear:(BOOL)animated &#123;</div><div class="line">    [super viewDidAppear:animated];</div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>64位下输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 场景 1</div><div class="line">2017-8-26 13:38:38.291705+0800 testPro[4036:799277] string: leichunfeng</div><div class="line">2017-8-26 13:38:38.291932+0800 testPro[4036:799277] string: leichunfeng</div><div class="line">2017-8-26 13:38:38.295360+0800 testPro[4036:799277] string: leichunfeng</div><div class="line"></div><div class="line">// 场景 2</div><div class="line">2017-8-26 13:44:11.657844+0800 testPro[4112:817709] string: leichunfeng</div><div class="line">2017-8-26 13:44:11.658055+0800 testPro[4112:817709] string: leichunfeng</div><div class="line">2017-8-26 13:44:11.661383+0800 testPro[4112:817709] string: leichunfeng</div><div class="line"></div><div class="line">// 场景 3</div><div class="line">2017-8-26 13:45:13.864718+0800 testPro[4139:821594] string: leichunfeng</div><div class="line">2017-8-26 13:45:13.864943+0800 testPro[4139:821594] string: leichunfeng</div><div class="line">2017-8-26 13:45:13.868293+0800 testPro[4139:821594] string: leichunfeng</div></pre></td></tr></table></figure>
+<p>32位下输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 场景 1</div><div class="line">2015-05-30 10:32:20.837 AutoreleasePool[33876:1448343] string: leichunfeng</div><div class="line">2015-05-30 10:32:20.838 AutoreleasePool[33876:1448343] string: leichunfeng</div><div class="line">2015-05-30 10:32:20.845 AutoreleasePool[33876:1448343] string: (null)</div><div class="line"></div><div class="line">// 场景 2</div><div class="line">2015-05-30 10:32:50.548 AutoreleasePool[33915:1448912] string: (null)</div><div class="line">2015-05-30 10:32:50.549 AutoreleasePool[33915:1448912] string: (null)</div><div class="line">2015-05-30 10:32:50.555 AutoreleasePool[33915:1448912] string: (null)</div><div class="line"></div><div class="line">// 场景 3</div><div class="line">2015-05-30 10:33:07.075 AutoreleasePool[33984:1449418] string: leichunfeng</div><div class="line">2015-05-30 10:33:07.075 AutoreleasePool[33984:1449418] string: (null)</div><div class="line">2015-05-30 10:33:07.094 AutoreleasePool[33984:1449418] string: (null)</div></pre></td></tr></table></figure>
+<p>在64位下。毫无例外的都输出了结果。第一次看到的时候，完全觉得不可思议，突然想到这个其实和 <code>NSString</code> 直接输入字符串得到的结果是相同的。</p>
+<blockquote>
+<p>这里牵扯到 <code>NSString *str = @&quot;leichunfeng&quot;</code> 不会被释放，是因为这样的话 str 是被当一个 Strinig 类型的常量 <code>NSCFConstantString</code> 来对待的。</p>
+</blockquote>
+<p>但是这里都是使用工厂方法创建的类型。所以都是应该是一个实实在在的对象。结合 <code>Tagged Pointer</code> 我们知道，在64位下，对象的指针是会进行优化的。在 64位 代码中断点我们也可以看到这个对象确确实实是一个 <code>NSTaggedPointerString</code> 对象。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1509000939995.png" width="179"></p>
+<p>所以假设成立。这是由于 <code>Tagged Pointer</code> 引起的无法释放。那光了解到这里，显然是不够的。继续深入了解下 <code>Tagged Pointer</code>。</p>
+<h2 id="Tagged-Pointer"><a href="#Tagged-Pointer" class="headerlink" title="Tagged Pointer"></a>Tagged Pointer</h2><blockquote>
+<p>为了优化内存，Apple 在64位设备中，引入了 <code>Tagged Pointer</code> 来优化 isa 指针。（64位的指针来记录地址太浪费啦～）。其中有一部分就默认了一些值<code>NSDate</code>,<code>NSNumber</code>,<code>NSString</code>…</p>
+</blockquote>
+<p>照这么说，如果一个值的类型很大，那必然无法使用 <code>Tagged Pointer</code> 来进行优化，我对原来的代码进行一些修改。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">__weak NSString *string_weak_ = nil;</div><div class="line"></div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    </div><div class="line">    // 场景 1</div><div class="line">    NSString *string = [NSString stringWithFormat:@&quot;12345678900&quot;];</div><div class="line">    string_weak_ = string;</div><div class="line">    </div><div class="line">    // 场景 2</div><div class="line">//        @autoreleasepool &#123;</div><div class="line">//            NSString *string = [NSString stringWithFormat:@&quot;12345678900&quot;];</div><div class="line">//            string_weak_ = string;</div><div class="line">//        &#125;</div><div class="line">    </div><div class="line">    // 场景 3</div><div class="line">//        NSString *string = nil;</div><div class="line">//        @autoreleasepool &#123;</div><div class="line">//            string = [NSString stringWithFormat:@&quot;12345678900&quot;];</div><div class="line">//            string_weak_ = string;</div><div class="line">//        &#125;</div><div class="line">    </div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)viewWillAppear:(BOOL)animated &#123;</div><div class="line">    [super viewWillAppear:animated];</div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)viewDidAppear:(BOOL)animated &#123;</div><div class="line">    [super viewDidAppear:animated];</div><div class="line">    NSLog(@&quot;string: %@&quot;, string_weak_);</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)didReceiveMemoryWarning &#123;</div><div class="line">    [super didReceiveMemoryWarning];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>64位下输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 场景 1</div><div class="line">2017-8-26 15:43:23.232464+0800 testPro[5432:1104611] string: 12345678900</div><div class="line">2017-8-26 15:43:23.232667+0800 testPro[5432:1104611] string: 12345678900</div><div class="line">2017-8-26 15:43:23.237981+0800 testPro[5432:1104611] string: (null)</div><div class="line"></div><div class="line">// 场景 2</div><div class="line">2017-10-26 15:44:08.761063+0800 testPro[5460:1109356] string: (null)</div><div class="line">2017-10-26 15:44:08.761292+0800 testPro[5460:1109356] string: (null)</div><div class="line">2017-10-26 15:44:08.766554+0800 testPro[5460:1109356] string: (null)</div><div class="line"></div><div class="line">// 场景 3</div><div class="line">2017-10-26 15:44:57.918361+0800 testPro[5485:1114091] string: 12345678900</div><div class="line">2017-10-26 15:44:57.918576+0800 testPro[5485:1114091] string: (null)</div><div class="line">2017-10-26 15:44:57.923708+0800 testPro[5485:1114091] string: (null)</div></pre></td></tr></table></figure>
+<p>这一下，完全可以放心了。输出的结果和 32位 下的完全一致。这就表明了。在 <code>Tagged Pointer</code> 下，指针默认储存着一些值。</p>
+<h3 id="Tagged-Pointer-对应关系"><a href="#Tagged-Pointer-对应关系" class="headerlink" title="Tagged Pointer 对应关系"></a>Tagged Pointer 对应关系</h3><p>简单记录下 Tagged Pointer 中 <code>isa</code> 的指针存放。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">union isa_t </div><div class="line">&#123; </div><div class="line">    isa_t() &#123; &#125;</div><div class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</div><div class="line"></div><div class="line">    Class cls;</div><div class="line">    uintptr_t bits;</div><div class="line"></div><div class="line">#if SUPPORT_NONPOINTER_ISA</div><div class="line"># if __arm64__</div><div class="line">#   define ISA_MASK        0x00000001fffffff8ULL</div><div class="line">#   define ISA_MAGIC_MASK  0x000003fe00000001ULL</div><div class="line">#   define ISA_MAGIC_VALUE 0x000001a400000001ULL</div><div class="line">    struct &#123;</div><div class="line">        uintptr_t indexed           : 1;</div><div class="line">        uintptr_t has_assoc         : 1;</div><div class="line">        uintptr_t has_cxx_dtor      : 1;</div><div class="line">        uintptr_t shiftcls          : 30; // MACH_VM_MAX_ADDRESS 0x1a0000000</div><div class="line">        uintptr_t magic             : 9;</div><div class="line">        uintptr_t weakly_referenced : 1;</div><div class="line">        uintptr_t deallocating      : 1;</div><div class="line">        uintptr_t has_sidetable_rc  : 1;</div><div class="line">        uintptr_t extra_rc          : 19;</div><div class="line">#       define RC_ONE   (1ULL&lt;&lt;45)</div><div class="line">#       define RC_HALF  (1ULL&lt;&lt;18)</div><div class="line">    &#125;;</div><div class="line"></div><div class="line"># elif __x86_64__</div><div class="line">#   define ISA_MASK        0x00007ffffffffff8ULL</div><div class="line">#   define ISA_MAGIC_MASK  0x0000000000000001ULL</div><div class="line">#   define ISA_MAGIC_VALUE 0x0000000000000001ULL</div><div class="line">    struct &#123;</div><div class="line">        uintptr_t indexed           : 1;</div><div class="line">        uintptr_t has_assoc         : 1;</div><div class="line">        uintptr_t has_cxx_dtor      : 1;</div><div class="line">        uintptr_t shiftcls          : 44; // MACH_VM_MAX_ADDRESS 0x7fffffe00000</div><div class="line">        uintptr_t weakly_referenced : 1;</div><div class="line">        uintptr_t deallocating      : 1;</div><div class="line">        uintptr_t has_sidetable_rc  : 1;</div><div class="line">        uintptr_t extra_rc          : 14;</div><div class="line">#       define RC_ONE   (1ULL&lt;&lt;50)</div><div class="line">#       define RC_HALF  (1ULL&lt;&lt;13)</div><div class="line">    &#125;;</div><div class="line"></div><div class="line"># else</div><div class="line">    // Available bits in isa field are architecture-specific.</div><div class="line">#   error unknown architecture</div><div class="line"># endif</div><div class="line"></div><div class="line">// SUPPORT_NONPOINTER_ISA</div><div class="line">#endif</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><code>isa</code> 对应的含义</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Tables</th>
+<th style="text-align:left">Are</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">indexed</td>
+<td style="text-align:left">0 表示普通的 isa 指针，1 表示使用优化，存储引用计数</td>
+</tr>
+<tr>
+<td style="text-align:left">has_assoc</td>
+<td style="text-align:left">表示该对象是否包含 associated object，如果没有，则析构时会更快</td>
+</tr>
+<tr>
+<td style="text-align:left">has_cxx_dtor</td>
+<td style="text-align:left">表示该对象是否有 C++ 或 ARC 的析构函数，如果没有，则析构时更快</td>
+</tr>
+<tr>
+<td style="text-align:left">shiftcls</td>
+<td style="text-align:left">类的指针</td>
+</tr>
+<tr>
+<td style="text-align:left">magic</td>
+<td style="text-align:left">固定值为 0xd2，用于在调试时分辨对象是否未完成初始化。</td>
+</tr>
+<tr>
+<td style="text-align:left">weakly_referenced</td>
+<td style="text-align:left">表示该对象是否有过 weak 对象，如果没有，则析构时更快</td>
+</tr>
+<tr>
+<td style="text-align:left">has<em> sidetable</em> rc</td>
+<td style="text-align:left">表示该对象的引用计数值是否过大无法存储在 isa 指针</td>
+</tr>
+<tr>
+<td style="text-align:left">extra_rc</td>
+<td style="text-align:left">存储引用计数值减一后的结果</td>
+</tr>
+</tbody>
+</table>
+<p>该部分引用自 <a href="http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/" target="_blank" rel="external">Objective-C 引用计数原理</a>  </p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;起因&quot;&gt;&lt;a href=&quot;#起因&quot; class=&quot;headerlink&quot; title=&quot;起因&quot;&gt;&lt;/a&gt;起因&lt;/h2&gt;&lt;p&gt;在阅读 &lt;a href=&quot;http://blog.leichunfeng.com/blog/2015/05/31/objective-c-a
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>关于 iOS 生产模式下的错误捕捉（swift 版本）</title>
+    <link href="shaop.github.io/2017/09/12/%E5%85%B3%E4%BA%8E%20iOS%20%E7%94%9F%E4%BA%A7%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E9%94%99%E8%AF%AF%E6%8D%95%E6%8D%89%EF%BC%88swift%20%E7%89%88%E6%9C%AC%EF%BC%89/"/>
+    <id>shaop.github.io/2017/09/12/关于 iOS 生产模式下的错误捕捉（swift 版本）/</id>
+    <published>2017-09-12T09:30:38.000Z</published>
+    <updated>2017-10-26T14:14:24.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>事件的起因是之前公司的新项目使用了 swift 进行编程，经过几个月的打磨后终于上线，上线后使用的是友盟进行缺陷的捕捉。</p>
+<p>捕捉到的内容如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">*** -[__NSArrayM insertObject:atIndex:]: object cannot be nil</div><div class="line">(null)</div><div class="line">((</div><div class="line">	0   CoreFoundation                      0x0000000182b05918 &lt;redacted&gt; + 148</div><div class="line">	1   libobjc.A.dylib                     0x0000000182173f80 objc_exception_throw + 56</div><div class="line">	2   CoreFoundation                      0x00000001829ef134 CFStringConvertNSStringEncodingToEncoding + 0</div><div class="line">	3   UIKit                               0x0000000187b3a71c &lt;redacted&gt; + 208</div><div class="line">	4   UIKit                               0x0000000187830210 &lt;redacted&gt; + 620</div><div class="line">	5   UIKit                               0x0000000187847c58 &lt;redacted&gt; + 108</div><div class="line">	6   UIKit                               0x0000000187a0d5b4 &lt;redacted&gt; + 4036</div><div class="line">	7   UIKit                               0x00000001879f0114 &lt;redacted&gt; + 12824</div><div class="line">	8   UIKit                               0x0000000187a0a9f8 &lt;redacted&gt; + 360</div><div class="line">	9   xxxx                                0x10009e5c8 xxxx + 648648</div><div class="line">	10  xxxx                                0x10009cbd4 xxxx + 642004</div><div class="line">	11  UIKit                               0x000000018792df38 &lt;redacted&gt; + 1316</div><div class="line">	12  UIKit                               0x00000001879ec018 &lt;redacted&gt; + 376</div><div class="line">	13  UIKit                               0x0000000187aa8b70 &lt;redacted&gt; + 292</div><div class="line">	14  UIKit                               0x0000000187ab6030 &lt;redacted&gt; + 92</div><div class="line">	15  UIKit                               0x00000001877e9c24 &lt;redacted&gt; + 96</div><div class="line">	16  CoreFoundation                      0x0000000182abc588 &lt;redacted&gt; + 32</div><div class="line">	17  CoreFoundation                      0x0000000182aba32c &lt;redacted&gt; + 372</div><div class="line">	18  CoreFoundation                      0x0000000182aba75c &lt;redacted&gt; + 928</div><div class="line">	19  CoreFoundation                      0x00000001829e9680 CFRunLoopRunSpecific + 384</div><div class="line">	20  GraphicsServices                    0x0000000183ef8088 GSEventRunModal + 180</div><div class="line">	21  UIKit                               0x0000000187860d90 UIApplicationMain + 204</div><div class="line">	22  xxxx                                0x100008120 xxxx + 33056</div><div class="line">	23  libdyld.dylib                       0x000000018258a8b8 &lt;redacted&gt; + 4</div><div class="line">)</div><div class="line"></div><div class="line">dSYM UUID: 66FA9D06-0793-324A-A6DF-CF2399C36D0F</div><div class="line">CPU Type: arm64</div><div class="line">Slide Address: 0x0000000100000000</div><div class="line">Binary Image: xxxx</div><div class="line">Base Address: 0x0000000100094000</div></pre></td></tr></table></figure>
+<p>其中 <code>xxxx</code>代表项目名。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/img/1509026234525.png" width="419"></p>
+<p>进入到该版本的 dSYM 中。终端输入。即可看到错误的位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">atos -arch arm64 -o xxxx 0x10009e5c8</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;事件的起因是之前公司的新项目使用了 swift 进行编程，经过几个月的打磨后终于上线，上线后使用的是友盟进行缺陷的捕捉。&lt;/p&gt;
+&lt;p&gt;捕捉到的内容如下&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gu
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>关于 Jenkins 相关配置</title>
+    <link href="shaop.github.io/2017/07/24/%E5%85%B3%E4%BA%8E%20Jenkins%20%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/"/>
+    <id>shaop.github.io/2017/07/24/关于 Jenkins 相关配置/</id>
+    <published>2017-07-24T11:23:13.000Z</published>
+    <updated>2017-10-26T14:14:57.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Jenkins 作为一款持续构建的平台，毋庸置疑我们需要去了解它。在最近公司的项目中，为了简化公司的构建成本，从而引入了 Jenkins 。</p>
+<p>这一篇。将分成<strong>搭建</strong>和<strong>配置项目</strong>两个方面来记录一下我在搭建中遇到的坑和解决方案。</p>
+<h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><p>为了兼容移动产品（ iOS ）的构建，这里选择了在 macOS 上进行相关配置，这里选用的是一台公司暂时搁置的 mac mini 进行搭建。</p>
+<h3 id="JDK-的安装"><a href="#JDK-的安装" class="headerlink" title="JDK 的安装"></a>JDK 的安装</h3><p>对于 Jenkins 本身而言。他是用 java 编写的，首先需要的就是 jdk 。</p>
+<p>jdk 的安装方式有很多。我这里使用的是 Homebrew 进行安装。接下去很多的环境，我也是采用 Homebrew 进行安装。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ brew install jdk</div></pre></td></tr></table></figure></p>
+<h3 id="Apple-系列产品环境"><a href="#Apple-系列产品环境" class="headerlink" title="Apple 系列产品环境"></a>Apple 系列产品环境</h3><p>对于 Apple 家族的 app（包括 iOS app ，Mac  app）。需要在 macOS 环境下才能进行构建，所以这里选择了 macOS 来进行搭建环境。</p>
+<p>针对 Apple 的产品环境构建，只需要在 app store 上面下载 Xcode 即可。</p>
+<blockquote>
+<p>这里指的一体的是，Xcode 帮助我们省去很多不必要的麻烦。比如自带的 git 。</p>
+</blockquote>
+<h3 id="Android-环境搭建"><a href="#Android-环境搭建" class="headerlink" title="Android 环境搭建"></a>Android 环境搭建</h3><p>下载 android studio ，配置 gradle 版本。</p>
+<h2 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装 Jenkins 流传着两种方法，一种是直接客户端安装，一种是命令行安装，亲身实践后，发现客户端安装会导致在配置 shell 的时候捕捉不到环境变量，不过这个可以在之后使用命令行重启来修复。这里我们直接使用命令行安装 Jenkins ，依旧使用 Homebrew 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ brew install jenkins</div></pre></td></tr></table></figure>
+<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>找到 Jenkins 的 war 包所在目录。运行一下命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ java -jar jenkins.war --httpPort=8080</div></pre></td></tr></table></figure></p>
+<p>其中，8080 是端口号。<br>之后进行一系列的初始化设置就好了。</p>
+<h2 id="配置-iOS-工程"><a href="#配置-iOS-工程" class="headerlink" title="配置 iOS 工程"></a>配置 iOS 工程</h2><h3 id="创建一个工程"><a href="#创建一个工程" class="headerlink" title="创建一个工程"></a>创建一个工程</h3><p>输入一个项目名称，然后选择 <strong>自由风格的软件项目</strong>  即可<br><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508989187323.png" width="738"></p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><blockquote>
+<p>这里简单写一些重要的步骤。</p>
+</blockquote>
+<h4 id="源码配置"><a href="#源码配置" class="headerlink" title="源码配置"></a>源码配置</h4><p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508989661177.png" width="738"></p>
+<p>这里使用的是公司自己的 git 。输入项目的 git 地址，然后，添加 git 相关的认证。这里推荐使用 ssh 的认证方式</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508989738451.png" width="738"></p>
+<p>如下没有出现红色的错误信息表示配置正确。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508989837884.png" width="738"></p>
+<h4 id="环境证书配置"><a href="#环境证书配置" class="headerlink" title="环境证书配置"></a>环境证书配置</h4><p>在具体配置构建之前，需要配置证书。这里先下载插件。<strong>Keychains and Provisioning Profiles Management</strong></p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508990139590.png" width="738"></p>
+<p>进入 <strong>Keychains and Provisioning Profiles Management</strong> 配置具体的证书。上传 <code>login.keychain</code> 和具体的证书。</p>
+<blockquote>
+<p>这里关于 login.keychain 有个坑，在 macOS 10.12 之后找到的是 login.keychain-db，很多教程没有更新过来。</p>
+</blockquote>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508990300967.png" width="738"></p>
+<p>这样，环境证书就配置好了。</p>
+<h4 id="构建"><a href="#构建" class="headerlink" title="构建"></a>构建</h4><blockquote>
+<p>这里笔者使用的是 <code>fastlane</code> 进行构建。</p>
+</blockquote>
+<p>选择好的自己的刚刚倒入的证书<br><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508990775523.png" width="738"></p>
+<p>添加构建步骤，选择 <code>Execute shell</code></p>
+<p>如果项目有使用 <code>CocoaPods</code> 那此处就需要对项目首先进行一次 <code>pod install</code></p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508990932475.png" width="738"></p>
+<p>接下去，就是用 <code>fastlane</code> 进行构建。配置如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">#指定项目的scheme名称</div><div class="line"></div><div class="line">scheme=&quot;xxx&quot;</div><div class="line"></div><div class="line">#指定要打包的配置名</div><div class="line"></div><div class="line">configuration=&quot;Adhoc&quot;</div><div class="line"></div><div class="line">#指定打包所使用的输出方式，目前支持app-store, package, ad-hoc, enterprise, development, 和developer-id，即xcodebuild的method参数</div><div class="line"></div><div class="line">export_method=&apos;ad-hoc&apos;</div><div class="line"></div><div class="line">#指定项目地址</div><div class="line"></div><div class="line">workspace_path=&quot;$project_path/xxx.xcworkspace&quot;</div><div class="line"></div><div class="line">#指定输出路径</div><div class="line"></div><div class="line">output_path=&quot;/Users/xxx/Documents/xxxx&quot;</div><div class="line"></div><div class="line">#指定输出归档文件地址</div><div class="line"></div><div class="line">archive_path=&quot;$output_path/hkb_iOS_$&#123;now&#125;.xcarchive&quot;</div><div class="line"></div><div class="line">#指定输出ipa地址</div><div class="line"></div><div class="line">ipa_path=&quot;$output_path/xxxx_$&#123;now&#125;.ipa&quot;</div><div class="line"></div><div class="line">#指定输出ipa名称</div><div class="line"></div><div class="line">ipa_name=&quot;xxxx_$&#123;now&#125;.ipa&quot;</div><div class="line"></div><div class="line">#获取执行命令时的commit message</div><div class="line"></div><div class="line">commit_msg=&quot;$1&quot;</div><div class="line"></div><div class="line">#输出设定的变量值</div><div class="line"></div><div class="line">echo &quot;===workspace path: $&#123;workspace_path&#125;===&quot;</div><div class="line"></div><div class="line">echo &quot;===archive path: $&#123;archive_path&#125;===&quot;</div><div class="line"></div><div class="line">echo &quot;===ipa path: $&#123;ipa_path&#125;===&quot;</div><div class="line"></div><div class="line">echo &quot;===export method: $&#123;export_method&#125;===&quot;</div><div class="line"></div><div class="line">echo &quot;===commit msg: $1===&quot;</div><div class="line"></div><div class="line">#先清空前一次build</div><div class="line"></div><div class="line">#fastlane gym --workspace $&#123;workspace_path&#125; --scheme $&#123;scheme&#125; --clean --configuration $&#123;configuration&#125; --archive_path $&#123;archive_path&#125; --export_method $&#123;export_method&#125; --output_directory $&#123;output_path&#125; --output_name $&#123;ipa_name&#125;</div></pre></td></tr></table></figure>
+<p>最后，再上传蒲公英。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -F &quot;file=@$&#123;IPANAME&#125;.ipa&quot; -F &quot;uKey=xxxx&quot; -F &quot;_api_key=xxxx&quot; -F &quot;password=xxxx&quot; https://qiniu-storage.pgyer.com/apiv1/app/upload</div></pre></td></tr></table></figure>
+<h3 id="开始构建"><a href="#开始构建" class="headerlink" title="开始构建"></a>开始构建</h3><p>保存之后就可以开始构建了。等待一段时间，<br><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508991226441.png" width="32"><br>表示失败，<img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508991239050.png" width="33"><br>表示成功。</p>
+<h2 id="配置-Android-工程"><a href="#配置-Android-工程" class="headerlink" title="配置 Android 工程"></a>配置 Android 工程</h2><blockquote>
+<p>相比较于 iOS ，android 的构建会显得简单一点。源码配置相类似。具体从构建步骤开始</p>
+</blockquote>
+<h3 id="构建-1"><a href="#构建-1" class="headerlink" title="构建"></a>构建</h3><h4 id="构建版本"><a href="#构建版本" class="headerlink" title="构建版本"></a>构建版本</h4><p>点击添加构建版本后，选择 <code>Invoke Gradle scprit</code> 填写好相应信息后即可。</p>
+<p><img src="http://7xkl1p.com1.z0.glb.clouddn.com/work/1508991827807.png" width="738"></p>
+<p>具体的构建内容，需要从 android 的 <code>gradle</code> 文件中配置，每个项目都不一样，再次不一一列举。</p>
+<p>最后再上传蒲公英</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -F &quot;file=@$xxx.apk&quot; -F &quot;uKey=xxxx&quot; -F &quot;_api_key=xxxx&quot; -F &quot;password=xxxx&quot; https://qiniu-storage.pgyer.com/apiv1/app/upload</div></pre></td></tr></table></figure>
+<blockquote>
+<p>有一点需要说明，android 的版本构建依赖于 keystore 。这个文件不建议放在版本控制器上，建议拷贝一份放在 Jenkins 的构建源码版本中。</p>
+</blockquote>
+<h2 id="End"><a href="#End" class="headerlink" title="End"></a>End</h2><p>have fun！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Jenkins 作为一款持续构建的平台，毋庸置疑我们需要去了解它。在最近公司的项目中，为了简化公司的构建成本，从而引入了 Jenkins 。&lt;/p&gt;
+&lt;p&gt;这一篇。将分成&lt;strong&gt;搭建&lt;/strong&gt;和&lt;strong&gt;配置项目&lt;/strong&gt;两个方面来记录一下我在
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>ReactiveCocoa 学习心得</title>
+    <link href="shaop.github.io/2017/06/11/ReactiveCocoa%20%E5%AD%A6%E4%B9%A0%E5%BF%83%E5%BE%97/"/>
+    <id>shaop.github.io/2017/06/11/ReactiveCocoa 学习心得/</id>
+    <published>2017-06-11T13:51:22.000Z</published>
+    <updated>2017-10-26T14:16:07.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="基础认识"><a href="#基础认识" class="headerlink" title="基础认识"></a>基础认识</h2><p>信号：发送一个动作，让订阅这个信号的订阅者接收这些动作。只要有改变，信号内部接受数据就会马上发送数据</p>
+<p>订阅：订阅后方可接受信号内的消息。</p>
+<p>命令：命令一般用于网络请求，内包含一些耗时的操作。结束后发送一个信号。</p>
+<h2 id="一、RACSignal"><a href="#一、RACSignal" class="headerlink" title="一、RACSignal"></a>一、RACSignal</h2><p>创建<code>RACSignal</code> .使用<code>createSignal</code>方法，可以构建一个方法，在block内部，使用<code>subscriber(订阅者)</code>发送信号在其他地方的signal被订阅就会接受到信号内的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//创建信号</div><div class="line">RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">    [subscriber sendNext:@&quot;this is a signal&quot;];</div><div class="line">    [subscriber sendCompleted];</div><div class="line"></div><div class="line">    return [RACDisposable disposableWithBlock:^&#123;</div><div class="line">        NSLog(@&quot;信号在这里被终止了&quot;);</div><div class="line">    &#125;];</div><div class="line">&#125;];</div><div class="line"></div><div class="line">//订阅信号</div><div class="line">[signal subscribeNext:^(id x) &#123;</div><div class="line">    NSLog(@&quot;在这里接受到信号:%@&quot;,x);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p><em>控制台输出</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2017-01-05 21:42:36.422 learnRAC[1336:29812] 在这里接受到信号:this is a signal</div><div class="line">2017-01-05 21:42:36.423 learnRAC[1336:29812] 信号在这里被终止了</div></pre></td></tr></table></figure>
+<h2 id="二、RACSubject"><a href="#二、RACSubject" class="headerlink" title="二、RACSubject"></a>二、RACSubject</h2><h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p><strong>RACSubject</strong><br>信号提供者，自己可以充当信号，又能发送信号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//创建一个信号</div><div class="line">RACSubject *subject = [RACSubject subject];</div><div class="line"></div><div class="line">//订阅者接受消息</div><div class="line">[subject subscribeNext:^(id x) &#123;</div><div class="line">    NSLog(@&quot;第一个订阅者在这里接收到信号:%@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">[subject subscribeNext:^(id x) &#123;</div><div class="line">    NSLog(@&quot;第二个订阅者在这里接收到信号:%@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">//发送消息</div><div class="line">[subject sendNext:@&quot;一条消息&quot;];</div></pre></td></tr></table></figure>
+<p><em>控制台输出</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">2017-01-05 23:01:13.401 learnRAC[1929:88074] 第一个订阅者在这里接收到信号:一条消息</div><div class="line">2017-01-05 23:01:13.404 learnRAC[1929:88074] 第二个订阅者在这里接收到信号:一条消息</div></pre></td></tr></table></figure></p>
+<p><strong>RACReplaySubject</strong><br><code>RACReplaySubject</code>允许先发送，后订阅。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">// 1.创建信号</div><div class="line">RACReplaySubject *replaySubject = [RACReplaySubject subject];</div><div class="line"></div><div class="line">// 2.发送信号</div><div class="line">[replaySubject sendNext:@1];</div><div class="line">[replaySubject sendNext:@2];</div><div class="line"></div><div class="line">// 3.订阅信号</div><div class="line">[replaySubject subscribeNext:^(id x) &#123;</div><div class="line"></div><div class="line">    NSLog(@&quot;第一个订阅者接收到的数据%@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">// 订阅信号</div><div class="line">[replaySubject subscribeNext:^(id x) &#123;</div><div class="line"></div><div class="line">    NSLog(@&quot;第二个订阅者接收到的数据%@&quot;,x);</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<p><strong>这里可以总结一下</strong></p>
+<ol>
+<li><code>subscribeNext:</code>方法是订阅者接受消息</li>
+<li><code>sendNext:</code>方法是订阅者发送消息</li>
+</ol>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>RACSubject可以用来代替delegate 。方便实现代理的功能。<br>使用方法如下</p>
+<p><strong>viewController1.m</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender&#123;</div><div class="line">    SecondViewController *vc = segue.destinationViewController;</div><div class="line">    vc.delegate = [RACSubject subject];</div><div class="line">    [vc.delegate subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;按钮被点击%@&quot;,x);</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>viewController2.h</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#import &lt;UIKit/UIKit.h&gt;</div><div class="line"></div><div class="line">@interface viewController2 : UIViewController</div><div class="line">@property (nonatomic , strong) RACSubject *delegate;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p><strong>viewController2.m</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- (IBAction)ClickAction:(id)sender &#123;</div><div class="line">    if (self.delegate) &#123;</div><div class="line">        [self.delegate sendNext:@&quot;this is a msg&quot;];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><em>控制台输出</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017-01-05 22:57:55.701 learnRAC[1874:84684] 按钮被点击this is a msg</div></pre></td></tr></table></figure></p>
+<p>用这种方式，比直接写delegate方法要来的快得多。</p>
+<h2 id="三、RACCommand"><a href="#三、RACCommand" class="headerlink" title="三、RACCommand"></a>三、RACCommand</h2><p><code>RACCommand</code>从字面意思上是一个命令，其主要应用场景在于应用一些耗时的操作，例如网络操作，之后再发送一个信号，进行消息数据的传递。</p>
+<p><strong>例子</strong><br>模仿一个viewmodel的网络操作，获取数据后传递给viewController进行数据显示。<br><strong>viewmodel</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">-(void)doNetWork&#123;</div><div class="line">    if (self = [super init]) &#123;</div><div class="line">        RACCommand *command = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) &#123;</div><div class="line">            </div><div class="line">            NSLog(@&quot;这里执行了一段网络请求获取到的input是：%@&quot;,input);</div><div class="line">            NSString *data = @&quot;返回数据&quot;;</div><div class="line"></div><div class="line">            return [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">                [subscriber sendNext:data];</div><div class="line">                [subscriber sendCompleted];</div><div class="line">                return [RACDisposable disposableWithBlock:^&#123;</div><div class="line">                    NSLog(@&quot;销毁了信号&quot;);</div><div class="line">                &#125;];</div><div class="line">            &#125;];</div><div class="line">            </div><div class="line">        &#125;];</div><div class="line">        _command = command;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>viewController</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    CommandViewModel *cmdVD = [[CommandViewModel alloc] init];</div><div class="line">    [cmdVD.command.executionSignals subscribeNext:^(id x) &#123;</div><div class="line">        [x subscribeNext:^(id x) &#123;</div><div class="line">            NSLog(@&quot;网络请求的数据为:%@&quot;,x);</div><div class="line">        &#125;];</div><div class="line">    &#125;];</div><div class="line"></div><div class="line">    //高级用法</div><div class="line">    [cmdVD.command.executionSignals.switchToLatest subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;网络请求的数据为:%@&quot;,x);</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里，还可以根据发送signal的状态定义command接收的状态。</p>
+<p><code>[subscriber sendError:[[NSError alloc] init]];</code></p>
+<p>那么在接受的时候就可以使用此方法来接受错误状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[cmdVD.command.errors.switchToLatest subscribeNext:^(id x) &#123;</div><div class="line">//do error        </div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<h2 id="几个有趣的实用性方法"><a href="#几个有趣的实用性方法" class="headerlink" title="几个有趣的实用性方法"></a>几个有趣的实用性方法</h2><ol>
+<li><code>rac_signalForSelector</code> ：用作代替代理，实现某些Selector时需要执行的语句。</li>
+<li><code>rac_valuesAndChangesForKeyPath</code> ：用作代替KVO，对某个对象进行监听。</li>
+<li><code>rac_signalForControlEvents</code>：用作监听某些动作，比如按下按钮的这些动作。</li>
+<li><code>rac_addObserverForName</code>：用作监听某些通知，例如OC中的NSNotification。</li>
+<li><code>rac_textSignal</code>：用作监听文本框内容的变化。</li>
+<li><code>rac_liftSelector:withSignalsFromArray:Signals</code>：这是一个信号组，但是这些signals必须都被sendNext过。</li>
+</ol>
+<h2 id="几个重要的操作方法"><a href="#几个重要的操作方法" class="headerlink" title="几个重要的操作方法"></a>几个重要的操作方法</h2><h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><p>map的作用：把原信号的值映射成一个新的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">// 创建信号</div><div class="line">RACSubject *subject = [RACSubject subject];</div><div class="line"></div><div class="line">RACSignal *signal = [subject map:^id(id value) &#123;</div><div class="line">    // 当原信号发送数据的时候就会来调用这个block,修改原信号的内容</div><div class="line">    value  = @([value floatValue] +1.0);</div><div class="line">    // 返回值就是修改后的原信号的内容</div><div class="line">    return value;</div><div class="line">&#125;];</div><div class="line"></div><div class="line">[signal subscribeNext:^(id x) &#123;</div><div class="line">    NSLog(@&quot;%@&quot;,x);</div><div class="line">&#125;];</div><div class="line"></div><div class="line">[subject sendNext:@&quot;999&quot;];</div></pre></td></tr></table></figure>
+<p><em>返回</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017-01-06 14:11:15.024 testRAC[3121:139101] 1000</div></pre></td></tr></table></figure>
+<h3 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h3><p>merge：把多个信号合并为一个信号，任何一个信号有新值时就会调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">RACSignal *signalA = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        [subscriber sendNext:@&quot;signalA发送完信号&quot;];</div><div class="line">       </div><div class="line">        return  nil;</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    RACSignal *signalB = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</div><div class="line">        [subscriber sendNext:@&quot;signalB发送完信号&quot;];</div><div class="line">        </div><div class="line">        return nil;</div><div class="line">    &#125;];</div><div class="line">    </div><div class="line">    // 合并信号，任何一个信号发送数据都能在订阅中监听到</div><div class="line">    RACSignal *mergesignal = [signalA merge:signalB];</div><div class="line">    </div><div class="line">    [mergesignal subscribeNext:^(id x) &#123;</div><div class="line">        NSLog(@&quot;%@&quot;,x);</div><div class="line">    &#125;];</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;基础认识&quot;&gt;&lt;a href=&quot;#基础认识&quot; class=&quot;headerlink&quot; title=&quot;基础认识&quot;&gt;&lt;/a&gt;基础认识&lt;/h2&gt;&lt;p&gt;信号：发送一个动作，让订阅这个信号的订阅者接收这些动作。只要有改变，信号内部接受数据就会马上发送数据&lt;/p&gt;
+&lt;p&gt;订阅：订
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>唐巧《ios开发进阶》笔记</title>
